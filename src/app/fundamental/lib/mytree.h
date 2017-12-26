@@ -64,7 +64,7 @@ public:
 
 	int addNode(T t, V v)
 	{
-
+		return 0;
 	}
 };
 
