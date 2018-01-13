@@ -8,16 +8,14 @@
 #ifndef APP_FUNDAMENTAL_IMPL_STATEMACHINE_CACCUMULATOR_H_
 #define APP_FUNDAMENTAL_IMPL_STATEMACHINE_CACCUMULATOR_H_
 
-class CAccumulator {
+#include "sm.h"
+
+class CAccumulator : public MITSM<double, double, double> {
 public:
-	CAccumulator();
-	CAccumulator(int initVal);
+	CAccumulator(double initVal);
 	virtual ~CAccumulator();
 
-	int getNextValues(int currentState, int input, int& output);	// return next state
-	int step(int input);
-private:
-	int state;
+	double getNextValues(double currentState, double input);	// return next state
 };
 
 #endif /* APP_FUNDAMENTAL_IMPL_STATEMACHINE_CACCUMULATOR_H_ */

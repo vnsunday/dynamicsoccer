@@ -11,15 +11,15 @@
 #include <vector>
 
 template<class T, class T_I, class T_O>
-class SM
+class MITSM
 {
 public:
-	SM(T initState)
+	MITSM(T initState)
 	{
 		startState_ = initState;
 	}
 
-	virtual ~SM() {}
+	virtual ~MITSM() {}
 
 	int start()
 	{
@@ -27,7 +27,7 @@ public:
 		return 0;
 	}
 
-	virtual T getNextValues(T currentState, T_I input, T_O& output) = 0;
+	virtual T getNextValues(T currentState, T_I input, T_I& output) = 0;
 	
 	T_O step(T_I input)
 	{
