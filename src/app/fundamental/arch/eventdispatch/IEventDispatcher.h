@@ -11,6 +11,7 @@
 class IEventDispatcher {
 public:
 	virtual void dispatchEvent(int EVT_CODE, void* data) = 0;
+	virtual ~IEventDispatcher() {}
 };
 
 #endif /* APP_FUNDAMENTAL_ARCH_EVENTDISPATCH_IEVENTDISPATCHER_H_ */
