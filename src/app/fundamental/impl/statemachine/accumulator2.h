@@ -11,10 +11,10 @@
 #include "sm.h"
 
 template<class T>
-class CAccumulator2 : public SM<T, T, T>
+class CAccumulator2 : public MITSM< T, T, T>
 {
 public:
-	CAccumulator2(T initState) : SM<T,T,T>(initState)
+	CAccumulator2(T initState) : MITSM<T,T,T>(initState)
 	{}
 
 	T getNextValues(T currentState, T input, T& output)
@@ -22,7 +22,7 @@ public:
 		T nextState;
 
 		nextState = currentState + input;
-		output = currentState + input;
+		output = nextState;
 
 		return nextState;
 	}

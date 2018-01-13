@@ -15,7 +15,7 @@ public:
 	CAccumulator(double initVal);
 	virtual ~CAccumulator();
 
-	double getNextValues(double currentState, double input);	// return next state
+	double getNextValues(double currentState, double input, double& output);	// return next state
 };
 
 #endif /* APP_FUNDAMENTAL_IMPL_STATEMACHINE_CACCUMULATOR_H_ */

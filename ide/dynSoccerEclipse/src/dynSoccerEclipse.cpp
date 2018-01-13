@@ -5,6 +5,11 @@
 #include <vector>
 #include "app/fundamental/lib/mytree.h"
 #include "app/fundamental/impl/statemachine/accumulator2.h"
+#include "app/fundamental/impl/statemachine/CAccumulator.h"
+#include "app/fundamental/impl/statemachine/Gain.h"
+#include "app/fundamental/impl/statemachine/abc_acceptor.h"
+#include "app/fundamental/impl/statemachine/MIT_Example.h"
+#include "app/util/Console.h"
 
 using namespace std;
 
@@ -23,15 +28,37 @@ int main() {
 	pp = &f;
 	pp(1);
 
-	CAccumulator2<int> acc(1);
+	vector<double> voutput;
+	double inputs[] = { 5, 10, 15};
+
+	CAccumulator acc(1);
 	acc.start();
-	int x2 = acc.step(2);
+	acc.transduce(inputs, 3, voutput);
 
-	int inputs[3] = { 5, 10, 15};
-	vector<int> output;
-	acc.transduce(&inputs[0], 3, output);
+	Console::log(voutput);
 
-	printf("Next values = %d\r\n", x2);
+	double input_gain_[] = { 1.1, -2, 100, 5};
+	vector<double> vGain;
+	Gain<double> smG(3);
+	smG.start();
+	smG.transduce(input_gain_, 4, vGain);
+
+	Console::log(vGain);
+
+	char abcInput[] = {'a', 'b', 'c', 'a', 'b', 'c', 'a', 'a', 'b'};
+	vector<bool> vABC;
+	ABC abcSM;
+	abcSM.start();
+	abcSM.transduce(abcInput, 9, vABC);
+
+	Console::log(vABC);
+
+	char updownInput[] = {'u', 'u', 'u', 'd', 'd', 'u'};
+	vector<int> vUD;
+	UpDown smUD(0);
+	smUD.start();
+	smUD.transduce(updownInput, 6, vUD);
+	Console::log(vUD);
 
 	return 0;
 }
