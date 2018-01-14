@@ -10,6 +10,18 @@
 
 #include "sm.h"
 
+struct DoubleDouble
+{
+	double d1;
+	double d2;
+
+	DoubleDouble(double dd1, double dd2)
+	{
+		d1 = dd1;
+		d2 = dd2;
+	}
+};
+
 class UpDown : public MITSM<int, char, int>
 {
 public:
@@ -34,5 +46,64 @@ public:
 	}
 };
 
+template<class T>
+class Delay: public MITSM<T,T,T>
+{
+public:
+	Delay(T initState): MITSM<T,T,T>(initState) {}
+
+	T getNextValues(T currentState, T input, T& output)
+	{
+		output = currentState;		// Output is the current state
+		return input;				// Input is the next state
+	}
+};
+
+class Average2 : public MITSM<double, double, double>
+{
+public:
+	Average2(double initState): MITSM<double, double, double>(initState) {}
+
+	double getNextStates(double currentState, double input, double& output)
+	{
+		double nextStt = input;
+		output = (currentState + input) / 2;
+		return nextStt;
+	}
+};
+
+class SumLast3 : public MITSM<DoubleDouble, double, double>
+{
+public:
+	SumLast3(DoubleDouble initState): MITSM<DoubleDouble, double, double>(initState) {}
+
+	DoubleDouble getNextStates(DoubleDouble currentState, double input, double& output)
+	{
+		DoubleDouble nextStt = DoubleDouble(currentState.d2, input);
+		output = currentState.d1 + currentState.d2 + input;
+
+		return nextStt;
+	}
+};
+
+template<class T>
+class Selector: public MITSM<T, std::vector<T>, T>
+{
+public:
+	Selector(T initState, int K): MITSM<T, std::vector<T>, T>(initState)
+	{
+		this->K = K;
+	}
+
+	T getNextStates(T currentState, std::vector<T> input, T& output)
+	{
+		T nextStt = input[K];
+		output = nextStt;
+
+		return nextStt;
+	}
+private:
+	int K;
+};
 
 #endif /* APP_FUNDAMENTAL_IMPL_STATEMACHINE_MIT_EXAMPLE_H_ */
