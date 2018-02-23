@@ -10,18 +10,6 @@
 
 #include "sm.h"
 
-struct DoubleDouble
-{
-	double d1;
-	double d2;
-
-	DoubleDouble(double dd1, double dd2)
-	{
-		d1 = dd1;
-		d2 = dd2;
-	}
-};
-
 class UpDown : public MITSM<int, char, int>
 {
 public:
@@ -72,10 +60,28 @@ public:
 	}
 };
 
+struct DoubleDouble
+{
+	double d1;
+	double d2;
+
+	DoubleDouble()
+	{
+		d1=0;
+		d2=0;
+	}
+
+	DoubleDouble(double dd1, double dd2)
+	{
+		d1 = dd1;
+		d2 = dd2;
+	}
+};
+
 class SumLast3 : public MITSM<DoubleDouble, double, double>
 {
 public:
-	SumLast3(DoubleDouble initState): MITSM<DoubleDouble, double, double>(initState) {}
+	SumLast3(double initSum): MITSM<DoubleDouble, double, double>(DoubleDouble(0, initSum)) {}
 
 	DoubleDouble getNextStates(DoubleDouble currentState, double input, double& output)
 	{
@@ -104,6 +110,25 @@ public:
 	}
 private:
 	int K;
+};
+
+class Increment: public MITSM<double, double, double>
+{
+public:
+	Increment(double initVal, double incr): MITSM<double, double, double>(initVal)
+	{
+		_incr = incr;
+	}
+
+	double getNextStates(double currentState, double input, double& output)
+	{
+		double nextStt = input;
+		output = input + currentState;
+
+		return nextStt;
+	}
+private:
+	double _incr;	
 };
 
 #endif /* APP_FUNDAMENTAL_IMPL_STATEMACHINE_MIT_EXAMPLE_H_ */

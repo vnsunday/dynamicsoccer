@@ -60,5 +60,31 @@ int main() {
 	smUD.transduce(updownInput, 6, vUD);
 	Console::log(vUD);
 
+
+	Delay<int> smDelay(99);
+	Delay<int> smDelay2(22);
+	vector<int> vCascadeOut;
+	int inputCascade[] = { 3, 8, 2, 4, 6, 5 };
+
+	smDelay.start();
+	smDelay2.start();
+	MITSMCascade<int, int> cascadeDelay(&smDelay, &smDelay2);
+
+	cascadeDelay.start();
+	cascadeDelay.transduce(inputCascade, 6, vCascadeOut);
+	Console::log(vCascadeOut);
+
+	Delay<int> smDelay3(99);
+	Delay<int> smDelay4(22);
+	vector<int> vCascadeOut2;
+	int inputCascade2[] = { 3, 8, 2, 4, 6, 5 };
+
+	smDelay3.start();
+	smDelay4.start();
+	MITSMCascade2<int,int> cascadeDelay2(&smDelay3, &smDelay4);
+	cascadeDelay2.start();
+	cascadeDelay2.transduce(inputCascade2, 6, vCascadeOut2);
+	Console::log(vCascadeOut2);
+
 	return 0;
 }
