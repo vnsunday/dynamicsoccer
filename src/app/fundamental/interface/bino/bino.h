@@ -47,7 +47,7 @@ class ISummation
 {
 public:
 	virtual ~ISummation() {}
-	virtual int define(std::string main_expression);
+	virtual int define(std::string main_expression) = 0;
 };
 
 class IProduction
