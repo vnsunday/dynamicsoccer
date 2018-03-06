@@ -19,7 +19,10 @@ public:
 
 	bool operator>(const SNumber& num1, const SNumber& num2);
 	SNumber operator+(const SNumber& num1);
-
+protected:
+	bool isNumber(const char* szNum);
+private:
+	std::string _strNum;
 };
 
 #endif /* APP_FUNDAMENTAL_IMPL_NUMBER_SNUMBER_H_ */
