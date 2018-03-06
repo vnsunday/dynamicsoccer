@@ -21,6 +21,7 @@ public:
 	SNumber operator+(const SNumber& num1);
 protected:
 	bool isNumber(const char* szNum);
+	int next_Values(char ch, int current_State, int& out_put);
 private:
 	std::string _strNum;
 };
