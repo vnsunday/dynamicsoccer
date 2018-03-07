@@ -1,0 +1,69 @@
+Test
+	Number=+10.23
+	ExpectedType=REAL_NUMBER
+	ExpectedSign=+
+	ExpectedNum=10
+	ExpectedDot=23
+
+Test
+	Number=   10.2 34
+	ExpectedType=INVALID
+
+Test
+	Number=   10.234    
+	ExpectedType=REAL
+	ExpectedSign=+
+	ExpectedNum=10
+	ExpectedDot=23
+
+Test
+	Number= -10.    
+	ExpectedType=INVALID
+
+Test
+	Number= -0010.01
+	ExpectedType=REAL
+	ExpectedSign=-
+	ExpectedNum=0010
+	ExpectedDot=01
+
+Test
+	Number= 00 1001      
+	ExpectedType=INVALID
+	ExpectedSign=-
+	ExpectedNum=0010
+	ExpectedDot=01
+
+Test
+	Number= 001001      
+	ExpectedType=NUMBER
+	ExpectedSign=+
+	ExpectedNum=001001
+	
+Test
+	Number= 001001E    +10.34      
+	ExpectedType=INVALID
+
+Test
+	Number= 001001E    +10.34      
+	ExpectedType=INVALID
+
+Test
+	Number= 001001E    +      
+	ExpectedType=INVALID
+
+Test
+	Number= 001001E    +10      
+	ExpectedType=NUMBER_POWER
+	ExpectedNum=001001
+	ExpectedSign=+
+	ExpectedPowerSign=+
+	ExpectedNumPower=10
+
+Test
+	Number= -23e-10
+	ExpectedType=NUMBER_POWER
+	ExpectedNum=23
+	ExpectedSign=-
+	ExpectedPowerSign=-	
+	ExpectedNumPower=10

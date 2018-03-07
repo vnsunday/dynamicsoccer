@@ -81,9 +81,19 @@ bool SNumber::isNumber(const char* szNum)
 	//	SemiNumber->(0-9) -> SemiNumber
 	//  Seminumber->(+/-/Space) -> Invalid -> End
 	//  
-	// 	
-	//	
+	//
+	//	States
+	//		- Start
+	//		- Sign
+	//		- Number
+	//		- RealNumber
+	//		- StartPower
+	//		- SignPower
+	//		- NumberPower
+	//		- RealNumberPower
+	//		- Invalid
 
+	
 	return true;
 }
 
