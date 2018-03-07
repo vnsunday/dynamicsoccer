@@ -129,8 +129,25 @@ bool SNumber::isNumber(const char* szNum)
 		state = nwState;
 	}
 
-	printf("Number=%s; Final state=%s\n", szNum, mapName[state].c_str());
-	raw.print();
+	if (state==NUMBER || state == FINISH_NUMBER)
+	{
+		raw.type_ = STYPE_INTEGER;		
+	}
+	else if (state == REAL_NUMBER || state == FINISH_REAL_NUMBER)
+	{
+		raw.type_ = STYPE_REAL;
+	}
+	else if (state == NUMBER_POWER || state == FINISH_NUMBER_POWER)
+	{
+		raw.type_ = STYPE_POWER;
+	}
+	else 
+	{
+		raw.type_ = STYPE_INVALID;
+	}
+
+	// printf("Number=%s; Final state=%s\n", szNum, mapName[state].c_str());
+	// raw.print();
 	
 	// State Machine
 	//	Type = Start, Invalid, TypeNumber, TypeE

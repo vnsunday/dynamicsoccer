@@ -6,6 +6,8 @@
  */
 
 #include <util/TestUtil.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 TestUtil::TestUtil() {
 }

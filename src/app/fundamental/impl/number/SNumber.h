@@ -13,8 +13,14 @@
 #include <stdlib.h>
 #include <map>
 
+#define STYPE_INVALID -1
+#define STYPE_INTEGER 1
+#define STYPE_REAL 2
+#define STYPE_POWER 3
+
 typedef struct structRawSNumber
 {
+	int type_;
 	int sign_;
 	std::string number_;
 	std::string dot_number_;
@@ -31,6 +37,7 @@ typedef struct structRawSNumber
 		isPower = false;
 		power_sign_ = 0;
 		power_number_ = "";
+		type_ = STYPE_INVALID;
 	}
 
 	void print()
@@ -41,6 +48,26 @@ typedef struct structRawSNumber
 					dot_number_.c_str(),
 					power_sign_,
 					power_number_.c_str() );
+	}
+
+	std::string type()
+	{
+		if (type_ == STYPE_POWER)
+		{
+			return "POWER";
+		}
+		else if (type_ == STYPE_INTEGER)
+		{
+			return "INTEGER";
+		}
+		else if (type_ == STYPE_REAL)
+		{
+			return "REAL";
+		}
+		else 
+		{
+			return "INVALID";
+		}
 	}
 
 } RawSNumber;

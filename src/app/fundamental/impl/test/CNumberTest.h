@@ -13,7 +13,7 @@ public:
 	CNumberTest();
 	virtual ~CNumberTest();
 
-	void runTest();
+	void runTest(const char*);
 };
 
 #endif /* APP_FUNDAMENTAL_IMPL_TEST_CNUMBERTEST_H_ */

@@ -1,6 +1,6 @@
 Test
 	Number=+10.23
-	ExpectedType=REAL_NUMBER
+	ExpectedType=REAL
 	ExpectedSign=+
 	ExpectedNum=10
 	ExpectedDot=23
@@ -36,7 +36,7 @@ Test
 
 Test
 	Number= 001001      
-	ExpectedType=NUMBER
+	ExpectedType=INTEGER
 	ExpectedSign=+
 	ExpectedNum=001001
 	
@@ -54,7 +54,7 @@ Test
 
 Test
 	Number= 001001E    +10      
-	ExpectedType=NUMBER_POWER
+	ExpectedType=POWER
 	ExpectedNum=001001
 	ExpectedSign=+
 	ExpectedPowerSign=+
@@ -62,7 +62,7 @@ Test
 
 Test
 	Number= -23e-10
-	ExpectedType=NUMBER_POWER
+	ExpectedType=POWER
 	ExpectedNum=23
 	ExpectedSign=-
 	ExpectedPowerSign=-	
