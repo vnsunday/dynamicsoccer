@@ -70,6 +70,30 @@ typedef struct structRawSNumber
 		}
 	}
 
+	std::string sign()
+	{
+		if (sign_ == 1)
+		{
+			return std::string("+");
+		}
+		else
+		{
+			return std::string("-");
+		}
+	}
+
+	std::string sign_power()
+	{
+		if (power_sign_ == 1)
+		{
+			return std::string("+");
+		}
+		else
+		{
+			return std::string("-");
+		}
+	}
+
 } RawSNumber;
 
 // Every numbers here

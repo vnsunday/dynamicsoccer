@@ -101,9 +101,7 @@ void CNumberTest::runTest(const char* szFile_Test)
 
 		if (onRunA_Test)
 		{
-			printf("Run testing\r\n");
 			bool bPass = true;
-			count_Test_++;
 
 			if (hasData)
 			{
@@ -115,8 +113,18 @@ void CNumberTest::runTest(const char* szFile_Test)
 					bPass = bPass && (TestUtil::assert(num1.rawData().type() == sExpectType, (string("Datatype of ") + sLine + string(" must be ") + sExpectType).c_str()) == 0);
 				}
 
+				if (check_Sign_)
+				{
+					bPass = bPass && (TestUtil::assert(num1.rawData().sign() == sExpectSign, (string("Sign of ") + sLine + string(" must be ") + sExpectSign).c_str()) == 0);	
+				}
+
+				if (checkNumber)
+				{
+					bPass = bPass && (TestUtil::assert(num1.rawData().number_ == sExpectNumber, (string("Number part of ") + sLine + string(" must be ") + sExpectSign).c_str()) == 0);	
+				}
 			}
 
+			count_Test_++;
 			countPassed+=bPass;
 			countFailed+=(!bPass);
 
