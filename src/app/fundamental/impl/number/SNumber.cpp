@@ -8,28 +8,64 @@
 #include <fundamental/impl/number/SNumber.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-SNumber::SNumber(const char* szNum) {
+using namespace std;
+
+int START = 0;
+int INVALID = -1;
+int SIGN = 1;
+int NUMBER = 2;
+int DOT_REAL = 3;
+int REAL_NUMBER = 4;
+int FINISH_NUMBER = 5;
+int FINISH_REAL_NUMBER = 6;
+
+int START_POWER = 7;
+int SIGN_POWER = 8;
+int NUMBER_POWER = 9;
+int FINISH_NUMBER_POWER = 10;
+int END = 11;
+
+SNumber::SNumber(const char* szNum) 
+{
 	_strNum = szNum;
+	isNumber(szNum);
+
+	mapName[START] = "START";
+	mapName[INVALID] = "INVALID";
+	mapName[SIGN] = "SIGN";
+	mapName[NUMBER] = "NUMBER";
+	mapName[DOT_REAL] = "DOT_REAL";
+	mapName[REAL_NUMBER] = "REAL_NUMBER";
+	mapName[FINISH_NUMBER] = "FINISH_NUMBER";
+	mapName[FINISH_REAL_NUMBER] = "FINISH_REAL_NUMBER";
+
+	mapName[START_POWER] = "START_POWER";
+	mapName[SIGN_POWER] = "SIGN_POWER";
+	mapName[NUMBER_POWER] = "NUMBER_POWER";
+	mapName[FINISH_NUMBER_POWER] = "FINISH_NUMBER_POWER";
+	mapName[END] = "END";
 }
 
-SNumber::~SNumber() {
-}
-
-bool SNumber::operator>(const SNumber& num1, const SNumber& num2)
+SNumber::~SNumber() 
 {
-	return true;
 }
 
-SNumber SNumber::operator+(const SNumber& num1)
-{
-	return SNumber("");
-}
-
-bool SNumber::operator>(const SNumber& num1, const SNumber& num2)
-{
-	return true;
-}
+//bool SNumber::operator>(const SNumber& num1, const SNumber& num2)
+//{
+//	return true;
+//}
+//
+//SNumber SNumber::operator+(const SNumber& num1)
+//{
+//	return SNumber("");
+//}
+//
+//bool SNumber::operator>(const SNumber& num1, const SNumber& num2)
+//{
+//	return true;
+//}
 
 bool SNumber::isNumber(const char* szNum)
 {
@@ -67,11 +103,35 @@ bool SNumber::isNumber(const char* szNum)
 							
 	*/
 	int type = 1;
+	
+	/*
+	int START = 0;
+	int INVALID = -1;
+	int SIGN = 1;
+	int NUMBER = 2;
+	int DOT_REAL = 3;
+	int REAL_NUMBER = 4;
+	int FINISH_NUMBER = 5;
+	int FINISH_REAL_NUMBER = 6;
+
+	int START_POWER = 7;
+	int SIGN_POWER = 8;
+	int NUMBER_POWER = 9;
+	int FINISH_NUMBER_POWER = 10;
+	int END = 11;
+	*/
+
+	int state = START;
 
 	for (int i = 0; i < n; ++i)
 	{
-		// Use a state machine for detect which type of number 
-	}	
+		int nwState = next_Values(szNum[i], state, raw);
+		state = nwState;
+	}
+
+	printf("Number=%s; Final state=%s\n", szNum, mapName[state].c_str());
+	raw.print();
+	
 	// State Machine
 	//	Type = Start, Invalid, TypeNumber, TypeE
 	//	Start ->(space)-> Start
@@ -92,25 +152,28 @@ bool SNumber::isNumber(const char* szNum)
 	//		- NumberPower
 	//		- RealNumberPower
 	//		- Invalid
-
 	
 	return true;
 }
 
-int SNumber::next_Values(char ch, int current_State, int& out_put)
+int SNumber::next_Values(char ch, int current_State, RawSNumber& out_put)
 {
+	/*
 	int START = 0;
 	int INVALID = -1;
 	int SIGN = 1;
 	int NUMBER = 2;
 	int DOT_REAL = 3;
 	int REAL_NUMBER = 4;
+	int FINISH_NUMBER = 5;
+	int FINISH_REAL_NUMBER = 6;
 
-	int SIGN_POWER = 5;
-	int NUMBER_POWER = 6;
-	int DOT_REAL_POWER = 7;
-	int REAL_NUMBER_POWER= 9;
-	int END = 10;
+	int START_POWER = 7;
+	int SIGN_POWER = 8;
+	int NUMBER_POWER = 9;
+	int FINISH_NUMBER_POWER = 10;
+	int END = 11;
+	*/
 
 	int nwState = 0;
 
@@ -119,6 +182,7 @@ int SNumber::next_Values(char ch, int current_State, int& out_put)
 		if (ch == '-' || ch == '+')
 		{
 			nwState = SIGN;
+			out_put.sign_ = ch == '+' ? 1 : -1;
 		}
 		else if (ch == ' ' || ch=='\t')
 		{
@@ -127,6 +191,8 @@ int SNumber::next_Values(char ch, int current_State, int& out_put)
 		else if (ch >= '0' && ch<='9')
 		{
 			nwState = NUMBER;
+			out_put.number_ = ch;
+			out_put.sign_ = 1;
 		}
 		else
 		{
@@ -146,6 +212,7 @@ int SNumber::next_Values(char ch, int current_State, int& out_put)
 		else if (ch >= '0' && ch<='9')
 		{
 			nwState = NUMBER;
+			out_put.number_ = ch;
 		}
 		else
 		{
@@ -172,6 +239,7 @@ int SNumber::next_Values(char ch, int current_State, int& out_put)
 		if (ch >= '0' && ch<='9')
 		{
 			nwState = REAL_NUMBER;
+			out_put.dot_number_ = ch;
 		}
 		else
 		{
@@ -183,12 +251,82 @@ int SNumber::next_Values(char ch, int current_State, int& out_put)
 		if (ch >= '0' && ch<='9')
 		{
 			nwState = REAL_NUMBER;
+			out_put.dot_number_ += ch;
 		}
 		else if (ch == 'e' || ch == 'E')
 		{
-			nwState = 
+			nwState = START_POWER; 	// Power
+		}
+		else
+		{
+			nwState = INVALID;
+		}
+	}
+	else if (current_State == START_POWER)
+	{
+		if (ch == ' ' || ch=='\t')
+		{
+			nwState = START_POWER;
+		}
+		else if (ch >= '0' && ch<='9')
+		{
+			nwState = NUMBER_POWER;
+			out_put.power_number_ = ch;
+			out_put.power_sign_ = 1;
+		}
+		else if (ch == '+' || ch=='-')
+		{
+			nwState = SIGN_POWER;
+			out_put.power_sign_ = ch == '+' ? 1 : -1;
+		}
+		else
+		{
+			nwState = INVALID;
+		}
+	}
+	else if (current_State == SIGN_POWER)
+	{
+		if (ch == ' ' || ch=='\t')
+		{
+			nwState = SIGN_POWER;
+		}
+		else if (ch >= '0' && ch<='9')
+		{
+			nwState = NUMBER_POWER;
+			out_put.power_number_ = ch;
+		}
+		else
+		{
+			nwState = INVALID;
+		}
+	}
+	else if (current_State == NUMBER_POWER)
+	{
+		if (ch >= '0' && ch<='9')
+		{
+			nwState = NUMBER_POWER;
+			out_put.power_number_ += ch;
+		}
+		else if (ch == ' ' || ch == '\t')
+		{
+			nwState = FINISH_NUMBER_POWER;
+		}
+		else
+		{
+			nwState = INVALID;
+		}		
+	}
+	else if (current_State == FINISH_NUMBER_POWER)
+	{
+		if (ch == ' ' || ch == '\t')
+		{
+			nwState = FINISH_NUMBER_POWER;
+		}
+		else
+		{
+			nwState = INVALID;
 		}
 	}
 	// if (current_State == )
-	return 0;
+	return nwState;
 }
