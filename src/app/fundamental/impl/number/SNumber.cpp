@@ -30,7 +30,6 @@ int END = 11;
 SNumber::SNumber(const char* szNum) 
 {
 	_strNum = szNum;
-	isNumber(szNum);
 
 	mapName[START] = "START";
 	mapName[INVALID] = "INVALID";
@@ -46,6 +45,8 @@ SNumber::SNumber(const char* szNum)
 	mapName[NUMBER_POWER] = "NUMBER_POWER";
 	mapName[FINISH_NUMBER_POWER] = "FINISH_NUMBER_POWER";
 	mapName[END] = "END";
+
+	isNumber(szNum);
 }
 
 SNumber::~SNumber() 
@@ -128,6 +129,7 @@ bool SNumber::isNumber(const char* szNum)
 		int nwState = next_Values(szNum[i], state, raw);
 		state = nwState;
 	}
+	// printf("Number %s; FinalState=%s\n", szNum, mapName[state].c_str());
 
 	if (state==NUMBER || state == FINISH_NUMBER)
 	{
@@ -192,7 +194,7 @@ int SNumber::next_Values(char ch, int current_State, RawSNumber& out_put)
 	int END = 11;
 	*/
 
-	int nwState = 0;
+	int nwState = 0 ; // current_State;
 
 	if (current_State == START)
 	{
@@ -245,6 +247,30 @@ int SNumber::next_Values(char ch, int current_State, RawSNumber& out_put)
 		else if (ch >= '0' && ch<='9')
 		{
 			nwState = NUMBER;
+			out_put.number_ += ch;
+		}
+		else if (ch == ' ' || ch == '\t')
+		{
+			nwState = FINISH_NUMBER;
+		}
+		else if (ch == 'e' || ch == 'E')
+		{
+			nwState = START_POWER;			
+		}
+		else
+		{
+			nwState = INVALID;
+		}
+	}
+	else if (current_State == FINISH_NUMBER)
+	{
+		if (ch == ' ' || ch == '\t')
+		{
+			nwState = FINISH_NUMBER;
+		}
+		else if (ch == 'e' || ch == 'E')
+		{
+			nwState = START_POWER;			
 		}
 		else
 		{
@@ -269,6 +295,25 @@ int SNumber::next_Values(char ch, int current_State, RawSNumber& out_put)
 		{
 			nwState = REAL_NUMBER;
 			out_put.dot_number_ += ch;
+		}
+		else if (ch == 'e' || ch == 'E')
+		{
+			nwState = START_POWER; 	// Power
+		}
+		else if (ch == ' ' || ch == '\t')
+		{
+			nwState = FINISH_REAL_NUMBER;
+		}
+		else
+		{
+			nwState = INVALID;
+		}
+	}
+	else if (current_State == FINISH_REAL_NUMBER)
+	{
+		if (ch == ' ' || ch == '\t')
+		{
+			nwState = FINISH_REAL_NUMBER;
 		}
 		else if (ch == 'e' || ch == 'E')
 		{
@@ -307,7 +352,7 @@ int SNumber::next_Values(char ch, int current_State, RawSNumber& out_put)
 		{
 			nwState = SIGN_POWER;
 		}
-		else if (ch >= '0' && ch<='9')
+		else if (ch >= '0' && ch <= '9')
 		{
 			nwState = NUMBER_POWER;
 			out_put.power_number_ = ch;
@@ -343,6 +388,11 @@ int SNumber::next_Values(char ch, int current_State, RawSNumber& out_put)
 		{
 			nwState = INVALID;
 		}
+	}
+	else
+	{
+		// printf("OTHER CASE current_State=%s; ch=%c\r\n", mapName[current_State].c_str(), ch);
+		nwState = current_State;
 	}
 	// if (current_State == )
 	return nwState;
