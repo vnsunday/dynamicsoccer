@@ -106,6 +106,8 @@ public:
 	// bool operator>(const SNumber& num1, const SNumber& num2);
 	// SNumber operator+(const SNumber& num1);
 	RawSNumber& rawData() { return raw; }
+
+	SNumber operator+(const SNumber&) const;
 protected:
 	bool isNumber(const char* szNum);
 	int next_Values(char ch, int current_State, RawSNumber& out_put);

@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -396,4 +397,55 @@ int SNumber::next_Values(char ch, int current_State, RawSNumber& out_put)
 	}
 	// if (current_State == )
 	return nwState;
+}
+
+SNumber SNumber::operator+(const SNumber& s1) const
+{	
+	string s_Final = "";
+
+	if (s1.raw.type_  == STYPE_INTEGER && this->raw.type_ == STYPE_INTEGER) 	
+	{
+		// Plus two number string here
+		int n = raw.number_.size();
+		int n1 = s1.raw.number_.size();
+		int n2 = std::max(n1, n);
+		short s_remember_ = 0;
+		char aBuffer[2];
+
+		for (int i=0;i<n2;i++)
+		{
+			short short00;
+			short short01;
+			short short02;
+
+			short00 = i < n ? raw.number_[n-i-1] - '0' : 0;
+			short01 = i< n1 ? raw.number_[n1-1-i] - '0' : 0;
+
+			short02 = short00 + short01 + s_remember_;
+
+			if (short02 < 10)
+			{
+				s_remember_ = 0;
+			}
+			else
+			{
+				s_remember_ = 1;
+				short02 -= 10;
+			}
+
+			sprintf(aBuffer, "%d", short02);
+
+			s_Final =  s_Final +  aBuffer;
+		}	
+
+		std::reverse(s_Final.begin(), s_Final.end());		
+	}
+	// TODO: Invalid	
+	else	 
+	{
+		
+		printf("Invalid + operator+\r\n");
+	}
+	SNumber n_Res(s_Final.c_str());
+	return n_Res;
 }
