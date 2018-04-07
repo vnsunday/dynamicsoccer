@@ -188,4 +188,12 @@ private:
 };
 
 
+template<typename T, typename T_I, typename T_O>
+class MITSMParallel : public MITSM< T, T_I, T_O>
+{
+public:
+	MITSMParallel(MITSM<T, T_I, T_O>* p_Sm1, MITSM<T, T_I, T_O>* p_Sm2): MITSM<T, T_I, T_O>(initial)
+	{}
+};
+
 #endif /* APP_FUNDAMENTAL_IMPL_STATEMACHINE_SM_H_ */
