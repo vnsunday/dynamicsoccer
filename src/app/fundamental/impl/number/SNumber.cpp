@@ -443,6 +443,7 @@ SNumber SNumber::operator+(const SNumber& s1) const
 	// TODO: Invalid	
 	else	 
 	{
+		// Square root
 		
 		printf("Invalid + operator+\r\n");
 	}

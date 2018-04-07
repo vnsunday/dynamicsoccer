@@ -120,7 +120,7 @@ public:
 		_incr = incr;
 	}
 
-	double getNextStates(double currentState, double input, double& output)
+	double getNextValues(double currentState, double input, double& output)
 	{
 		double nextStt = input;
 		output = input + currentState;
@@ -129,6 +129,65 @@ public:
 	}
 private:
 	double _incr;	
+};
+
+/*
+ *	TripleField.f1 = gatePosition
+ *  TripleField.f2 = cartAtGate?
+ *  TripleField.f3 = carJustExited?
+ */ 
+class SimpleParkingGate : public MITSM<std::string, TripleField<std::string, bool, bool>, std::string>
+{
+public:
+	SimpleParkingGate() : MITSM<std::string, TripleField<std::string, bool, bool>, std::string>( std::string("waiting") ) 
+	{
+	}
+
+	std::string generate_Output__(std::string s2)
+	{
+		if (s2 == "raising")
+		{
+			return "raise";
+		}
+		else if (s2 == "lowering")
+		{
+			return "lower";
+		}
+		else 
+		{
+			return "nop";
+		}
+	}
+
+	std::string getNextValues(std::string currentState, TripleField<std::string, bool, bool> input, std::string& output)
+	{
+		std::string nextStt;
+
+		if (currentState == "waiting" && input.f2)	// CarAtGate
+		{
+			// CarAtGate
+			nextStt = "raising";
+		}
+		else if (currentState == "raising" && input.f1 == "top")	// getPosition == "top"?
+		{
+			nextStt = "raised";
+		}
+		else if (currentState == "raised" && input.f3)
+		{
+			nextStt = "lowering";
+		}
+		else if (currentState == "lowering" && input.f1 == "bottom")
+		{
+			nextStt = "waiting";
+		}
+		else 
+		{
+			nextStt = currentState;
+		}
+
+		output = generate_Output__(nextStt);
+		return nextStt;
+	}
 };
 
 #endif /* APP_FUNDAMENTAL_IMPL_STATEMACHINE_MIT_EXAMPLE_H_ */
