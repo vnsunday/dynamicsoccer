@@ -28,6 +28,42 @@ struct DoubleT
 	}
 };
 
+template <typename T>
+struct TripleT
+{
+	T t1;
+	T t2;
+	T t3;
+
+	TripleT()
+	{}
+
+	TripleT(T val1, T val2, T val3)
+	{
+		t1 = val1;
+		t2 = val2;
+		t3 = val3;
+	}
+};
+
+template <typename T1, typename T2, typename T3>
+struct TripleField
+{
+	T1 f1;
+	T2 f2;
+	T3 f3;
+
+	TripleField()
+	{}
+
+	TripleField(T1 val1, T2 val2, T3 val3)
+	{
+		f1 = val1;
+		f2 = val2;
+		f3 = val3;
+	}
+};
+
 // template<typename T, typename T_I, typename T_O>
 template<class T, class T_I, class T_O>
 class MITSM
@@ -151,5 +187,13 @@ private:
 	MITSM<T, T_IO, T_IO>* _p2;
 };
 
+
+template<typename T, typename T_I, typename T_O>
+class MITSMParallel : public MITSM< T, T_I, T_O>
+{
+public:
+	MITSMParallel(MITSM<T, T_I, T_O>* p_Sm1, MITSM<T, T_I, T_O>* p_Sm2): MITSM<T, T_I, T_O>(initial)
+	{}
+};
 
 #endif /* APP_FUNDAMENTAL_IMPL_STATEMACHINE_SM_H_ */

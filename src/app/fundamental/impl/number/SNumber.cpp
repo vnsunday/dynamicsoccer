@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -30,7 +31,6 @@ int END = 11;
 SNumber::SNumber(const char* szNum) 
 {
 	_strNum = szNum;
-	isNumber(szNum);
 
 	mapName[START] = "START";
 	mapName[INVALID] = "INVALID";
@@ -46,6 +46,8 @@ SNumber::SNumber(const char* szNum)
 	mapName[NUMBER_POWER] = "NUMBER_POWER";
 	mapName[FINISH_NUMBER_POWER] = "FINISH_NUMBER_POWER";
 	mapName[END] = "END";
+
+	isNumber(szNum);
 }
 
 SNumber::~SNumber() 
@@ -128,6 +130,7 @@ bool SNumber::isNumber(const char* szNum)
 		int nwState = next_Values(szNum[i], state, raw);
 		state = nwState;
 	}
+	// printf("Number %s; FinalState=%s\n", szNum, mapName[state].c_str());
 
 	if (state==NUMBER || state == FINISH_NUMBER)
 	{
@@ -192,7 +195,7 @@ int SNumber::next_Values(char ch, int current_State, RawSNumber& out_put)
 	int END = 11;
 	*/
 
-	int nwState = 0;
+	int nwState = 0 ; // current_State;
 
 	if (current_State == START)
 	{
@@ -245,6 +248,30 @@ int SNumber::next_Values(char ch, int current_State, RawSNumber& out_put)
 		else if (ch >= '0' && ch<='9')
 		{
 			nwState = NUMBER;
+			out_put.number_ += ch;
+		}
+		else if (ch == ' ' || ch == '\t')
+		{
+			nwState = FINISH_NUMBER;
+		}
+		else if (ch == 'e' || ch == 'E')
+		{
+			nwState = START_POWER;			
+		}
+		else
+		{
+			nwState = INVALID;
+		}
+	}
+	else if (current_State == FINISH_NUMBER)
+	{
+		if (ch == ' ' || ch == '\t')
+		{
+			nwState = FINISH_NUMBER;
+		}
+		else if (ch == 'e' || ch == 'E')
+		{
+			nwState = START_POWER;			
 		}
 		else
 		{
@@ -269,6 +296,25 @@ int SNumber::next_Values(char ch, int current_State, RawSNumber& out_put)
 		{
 			nwState = REAL_NUMBER;
 			out_put.dot_number_ += ch;
+		}
+		else if (ch == 'e' || ch == 'E')
+		{
+			nwState = START_POWER; 	// Power
+		}
+		else if (ch == ' ' || ch == '\t')
+		{
+			nwState = FINISH_REAL_NUMBER;
+		}
+		else
+		{
+			nwState = INVALID;
+		}
+	}
+	else if (current_State == FINISH_REAL_NUMBER)
+	{
+		if (ch == ' ' || ch == '\t')
+		{
+			nwState = FINISH_REAL_NUMBER;
 		}
 		else if (ch == 'e' || ch == 'E')
 		{
@@ -307,7 +353,7 @@ int SNumber::next_Values(char ch, int current_State, RawSNumber& out_put)
 		{
 			nwState = SIGN_POWER;
 		}
-		else if (ch >= '0' && ch<='9')
+		else if (ch >= '0' && ch <= '9')
 		{
 			nwState = NUMBER_POWER;
 			out_put.power_number_ = ch;
@@ -344,6 +390,63 @@ int SNumber::next_Values(char ch, int current_State, RawSNumber& out_put)
 			nwState = INVALID;
 		}
 	}
+	else
+	{
+		// printf("OTHER CASE current_State=%s; ch=%c\r\n", mapName[current_State].c_str(), ch);
+		nwState = current_State;
+	}
 	// if (current_State == )
 	return nwState;
+}
+
+SNumber SNumber::operator+(const SNumber& s1) const
+{	
+	string s_Final = "";
+
+	if (s1.raw.type_  == STYPE_INTEGER && this->raw.type_ == STYPE_INTEGER) 	
+	{
+		// Plus two number string here
+		int n = raw.number_.size();
+		int n1 = s1.raw.number_.size();
+		int n2 = std::max(n1, n);
+		short s_remember_ = 0;
+		char aBuffer[2];
+
+		for (int i=0;i<n2;i++)
+		{
+			short short00;
+			short short01;
+			short short02;
+
+			short00 = i < n ? raw.number_[n-i-1] - '0' : 0;
+			short01 = i< n1 ? raw.number_[n1-1-i] - '0' : 0;
+
+			short02 = short00 + short01 + s_remember_;
+
+			if (short02 < 10)
+			{
+				s_remember_ = 0;
+			}
+			else
+			{
+				s_remember_ = 1;
+				short02 -= 10;
+			}
+
+			sprintf(aBuffer, "%d", short02);
+
+			s_Final =  s_Final +  aBuffer;
+		}	
+
+		std::reverse(s_Final.begin(), s_Final.end());		
+	}
+	// TODO: Invalid	
+	else	 
+	{
+		// Square root
+		
+		printf("Invalid + operator+\r\n");
+	}
+	SNumber n_Res(s_Final.c_str());
+	return n_Res;
 }

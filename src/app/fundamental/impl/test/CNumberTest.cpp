@@ -48,7 +48,8 @@ void CNumberTest::runTest(const char* szFile_Test)
 	int injuredTime = 1;			// A trick for testing the last after End-Of-Line
 	bool onRunA_Test = false;
 
-	while (std::getline(io_Test, sLine) && injuredTime > 0)
+	printf("Start testing SNumber from %s\r\n", szFile_Test);
+	while (std::getline(io_Test, sLine) || injuredTime > 0)
 	{
 		sLine.erase(0, sLine.find_first_not_of(' '));       // Left trim
 		sLine.erase(0, sLine.find_first_not_of('\t'));       // Left trim
@@ -105,40 +106,56 @@ void CNumberTest::runTest(const char* szFile_Test)
 
 			if (hasData)
 			{
-				printf("Run testing %d: %s \r\n", count_Test_, sNumber.c_str());
+				printf("\tRun testing database %02d: %s \r\n", ++count_Test_, sNumber.c_str());
 				SNumber num1(sNumber.c_str());
 
 				if (checkDataType)
 				{
-					bPass = bPass && (TestUtil::assert(num1.rawData().type() == sExpectType, (string("Datatype of ") + sLine + string(" must be ") + sExpectType).c_str()) == 0);
+					bPass = (TestUtil::assert(num1.rawData().type() == sExpectType, (string("\t\tFailed! Expected Datatype =") + sExpectType + "; Actual=" + num1.rawData().type()).c_str()) == 0) && bPass;
 				}
 
 				if (check_Sign_)
 				{
-					bPass = bPass && (TestUtil::assert(num1.rawData().sign() == sExpectSign, (string("Sign of ") + sLine + string(" must be ") + sExpectSign).c_str()) == 0);	
+					bPass = (TestUtil::assert(num1.rawData().sign() == sExpectSign, (string("\t\tFailed! Expected sign =") + sExpectSign + "; Actual=" + num1.rawData().sign()).c_str()) == 0)  && bPass;
 				}
 
 				if (checkNumber)
 				{
-					bPass = bPass && (TestUtil::assert(num1.rawData().number_ == sExpectNumber, (string("Number part of ") + sLine + string(" must be ") + sExpectSign).c_str()) == 0);	
+					bPass = (TestUtil::assert(num1.rawData().number_ == sExpectNumber, (string("\t\tFailed! Expected Number part =") + sExpectNumber + "; Actual=" + num1.rawData().number_).c_str()) == 0) && bPass;
 				}
+
+				if (checkTheDot)
+				{
+					bPass = (TestUtil::assert(num1.rawData().dot_number_ == sExpect_Dot, (string("\t\tFailed! Expected RealPart=") + sExpect_Dot + "; Actual=" + num1.rawData().dot_number_).c_str()) == 0) && bPass;
+				}
+
+				if (checkPowSign_)
+				{
+					bPass = (TestUtil::assert(num1.rawData().sign_power() == sExpectPower_Sign, (string("\t\tFailed! Expected PowerSign=") + sExpectPower_Sign + "; Actual=" + num1.rawData().sign_power()).c_str()) == 0) && bPass;
+				}
+
+				if (checkPowerNumber_)
+				{
+					bPass = (TestUtil::assert(num1.rawData().power_number_ == sExpectPower_Number, (string("\t\tFailed! Expected PowerNumber=") + sExpectPower_Number + "; Actual=" + num1.rawData().power_number_).c_str()) == 0) && bPass;
+				}
+
+				countPassed += bPass;
+				countFailed += (!bPass);
+
+				hasData = false;
+				checkDataType = false;
+				check_Sign_ = false;
+				checkNumber = false;
+				checkTheDot = false;
+				checkPowSign_ = false;
+				checkPowerNumber_ = false;				
 			}
-
-			count_Test_++;
-			countPassed+=bPass;
-			countFailed+=(!bPass);
-
-			hasData = false;
-			checkDataType = false;
-			check_Sign_ = false;
-			checkNumber = false;
-			checkTheDot = false;
-			checkPowSign_ = false;
-			checkPowerNumber_ = false;
 			onRunA_Test = false;
 		}
 	}
 
+	double dPass_Percent = 100 * (double) countPassed/ (double) count_Test_;
+	printf("Finish test. Summary: Total/Passed=%d/%d. Success percent=%f%\r\n", count_Test_, countPassed, dPass_Percent);
 
 	/*
 	SNumber num1("+10.23");

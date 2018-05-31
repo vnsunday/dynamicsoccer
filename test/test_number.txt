@@ -14,7 +14,7 @@ Test
 	ExpectedType=REAL
 	ExpectedSign=+
 	ExpectedNum=10
-	ExpectedDot=23
+	ExpectedDot=234
 
 Test
 	Number= -10.    
@@ -28,11 +28,8 @@ Test
 	ExpectedDot=01
 
 Test
-	Number= 00 1001      
+	Number= 00 1 0   01      
 	ExpectedType=INVALID
-	ExpectedSign=-
-	ExpectedNum=0010
-	ExpectedDot=01
 
 Test
 	Number= 001001      
@@ -65,5 +62,5 @@ Test
 	ExpectedType=POWER
 	ExpectedNum=23
 	ExpectedSign=-
-	ExpectedPowerSign=-	
+	ExpectedPowerSign=-
 	ExpectedNumPower=10
