@@ -5,7 +5,7 @@
  *      Author: ducvd
  */
 
-#include <fundamental/impl/number/SNumber.h>
+#include "SNumber.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -443,8 +443,7 @@ SNumber SNumber::operator+(const SNumber& s1) const
 	// TODO: Invalid	
 	else	 
 	{
-		// Square root
-		
+		// Square root		
 		printf("Invalid + operator+\r\n");
 	}
 	SNumber n_Res(s_Final.c_str());

@@ -5,13 +5,13 @@
  *      Author: spider
  */
 
-#include <fundamental/impl/test/CNumberTest.h>
-#include <fundamental/impl/number/SNumber.h>
+#include <app/fundamental/impl/test/CNumberTest.h>
+#include <app/fundamental/impl/number/SNumber.h>
 #include <sstream>
 #include <string>
 #include <fstream>
 #include <string.h>
-#include "util/TestUtil.h"
+#include "app/util/TestUtil.h"
 
 using namespace std;
 

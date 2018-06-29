@@ -5,7 +5,7 @@
  *      Author: spider
  */
 
-#include <fundamental/impl/statemachine/CAccumulator.h>
+#include <app/fundamental/impl/statemachine/CAccumulator.h>
 
 CAccumulator::CAccumulator(double initVal) : MITSM(initVal) {
 }

@@ -10,6 +10,9 @@
 #include "app/fundamental/impl/statemachine/abc_acceptor.h"
 #include "app/fundamental/impl/statemachine/MIT_Example.h"
 #include "app/util/Console.h"
+#include "app/fundamental/impl/number/SNumber.h"
+#include "app/fundamental/impl/test/CNumberTest.h"
+#include "app/test/CTestMITStateMachine.h"
 
 using namespace std;
 
@@ -19,15 +22,8 @@ int f(int a)
 	return 1;
 }
 
-int main() {
-	TreeNode<int,string> t(1, "HI");
-	int (*pp)(int);
-
-	int x;
-
-	pp = &f;
-	pp(1);
-
+int testStateMachine()
+{
 	vector<double> voutput;
 	double inputs[] = { 5, 10, 15};
 
@@ -60,15 +56,28 @@ int main() {
 	smUD.transduce(updownInput, 6, vUD);
 	Console::log(vUD);
 
-
 	Delay<int> smDelay(99);
 	Delay<int> smDelay2(22);
 	vector<int> vCascadeOut;
 	int inputCascade[] = { 3, 8, 2, 4, 6, 5 };
 
+	int t;
+
+	smDelay.start();
+	smDelay2.start();
+	MITSMCascade<int,int,int,int,int> cascade_Delay(&smDelay, &smDelay2);
+
+	cascade_Delay.start();
+	cascade_Delay.transduce(inputCascade, 6, vCascadeOut);
+
+	printf("Casecase Delay\r\n");
+	Console::log(vCascadeOut);
+
+	/*
 	smDelay.start();
 	smDelay2.start();
 	MITSMCascade<int, int> cascadeDelay(&smDelay, &smDelay2);
+	
 
 	cascadeDelay.start();
 	cascadeDelay.transduce(inputCascade, 6, vCascadeOut);
@@ -85,6 +94,24 @@ int main() {
 	cascadeDelay2.start();
 	cascadeDelay2.transduce(inputCascade2, 6, vCascadeOut2);
 	Console::log(vCascadeOut2);
+	*/
 
+	return 0;
+}
+
+int main() {
+	CNumberTest test;
+	test.runTest("../../../test/test_number.txt");
+
+	SNumber s1("10");
+	SNumber s2("113");
+
+	SNumber s3 = s1 + s2;
+	cout << s3.rawData().number_ << endl;
+
+	CTestMITStateMachine testMsm;
+	testMsm.runTest();
+
+	testStateMachine();
 	return 0;
 }

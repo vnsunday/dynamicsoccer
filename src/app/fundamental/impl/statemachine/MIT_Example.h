@@ -140,8 +140,7 @@ class SimpleParkingGate : public MITSM<std::string, TripleField<std::string, boo
 {
 public:
 	SimpleParkingGate() : MITSM<std::string, TripleField<std::string, bool, bool>, std::string>( std::string("waiting") ) 
-	{
-	}
+	{}
 
 	std::string generate_Output__(std::string s2)
 	{
@@ -189,5 +188,16 @@ public:
 		return nextStt;
 	}
 };
+
+// class ParallelAdd : public MITSMParallel<double, double, double, double, double>
+// {
+// public:
+// 	ParallelAdd(MITSM<double, double, double>* p_Sm1, MITSM<double, double, double>* p_Sm2) : MITSMParallel<double, double, double, double, double>(p_Sm1, p_Sm2)
+// 	{}
+// };
+
+
+// 
+
 
 #endif /* APP_FUNDAMENTAL_IMPL_STATEMACHINE_MIT_EXAMPLE_H_ */
