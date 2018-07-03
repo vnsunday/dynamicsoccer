@@ -80,6 +80,17 @@ struct TripleField
 	}
 };
 
+class SMCore 
+{
+public:
+	virtual ~SMCore() {}
+
+	void test()
+	{
+		std::type_info i;
+		
+	}
+};
 
 // template<typename T, typename T_I, typename T_O>
 template<class T, class T_I, class T_O>
@@ -233,6 +244,27 @@ private:
 	MITSM<T, T_IO, T_IO>* _p2;
 };
 
+// template<typename T, typename T_I, typename T_O>
+// class MITSMParallel : public MITSM< T, T_I, T_O>
+// {
+// public:
+// 	MITSMParallel(MITSM<T, T_I, T_O>* p_Sm1, MITSM<T, T_I, T_O>* p_Sm2): MITSM<T, T_I, T_O>(initial)
+// 	{}
+// };
+
+// template<typename T, typename T_I>
+// class MITSMFeedback : public MITSM<T,T,T>
+// {
+// public:
+	
+// };
+
+// class SMCore
+// {
+// public:
+// 	virtual void* getNextValues(void*, void*) = 0;
+
+// 	virtual void* step(void* input) = 0;
 
 template<typename T_State1, typename T_State2, typename T_I, typename T_O1, typename T_O2>
 class MITSMParallel : public MITSM<int , T_I,  DoubleField<T_O1, T_O2> >
@@ -280,6 +312,99 @@ public:
 private:
 	MITSM<T_State1, T_I, T_O1>* _p1;	
 	MITSM<T_State2, T_I, T_O2>* _p2;
+// 	virtual void* myState() = 0;
+// }
+};
+
+#define ANYOBJ void*
+#define SMDATA void*
+
+class SMCore 
+{
+public:
+
+	virtual void getState(SMDATA& state_Value) = 0;
+	virtual void setState(SMDATA state_Value) = 0;
+
+	virtual int TypeOfState() = 0;
+	virtual int TypeOfInput() = 0;
+	virtual int TypeOf_Output() = 0;
+
+	virtual int step(SMDATA input, SMDATA& output) = 0;
+	virtual int getNextValues(SMDATA currentState, SMDATA input, SMDATA& newstateVal, SMDATA& outputValue) = 0;
+};
+
+template<typename T_State, typename T_I, typename T_O>
+class SMBase : public SMCore
+{
+public:
+	
+	// Get state
+	 void getState(SMDATA& state_Value)
+	{
+		T* p = (T*)state_Value;
+		*p = ts;
+	}
+
+	void setState(SMDATA state_Value)
+	{
+		T* p = (T*) state_Value;
+		ts = *p;
+	}
+
+	int TypeOfState() 
+	{
+		return 0;
+	}
+
+	int TypeOfInput() 
+	{
+		return 0;
+	}
+
+	int TypeOf_Output() 
+	{
+		return 0;
+	}
+
+	int step(SMDATA input, SMDATA& output) 
+	{
+		T_I input01;
+		T_O output1;
+
+		
+	}
+
+	virtual int getNextValues(SMDATA currentState, SMDATA input, SMDATA& newstateVal, SMDATA& outputValue) = 0;	
+
+private:
+	T_State ts;
+}
+
+
+class SMEx : public SMCore
+{
+public:
+	void start()
+	{
+
+	}
+};
+
+class CAnyValue 
+{
+public:
+
+	void initInt()
+	{
+	}
+
+	int intVal()
+	{
+	}
+
+private:
+	void* pData;
 };
 
 // template<typename T_State1, typename T_State2, typename T_I1, typename T_I2, typename T_O1, typename T_O2>
