@@ -307,24 +307,67 @@ private:
 #define ANYOBJ void*
 #define SMDATA void*
 
-class SMCore 
+#define SM_TYPE_ID_INT 						1
+#define SM_TYPE_ID_POINTER_INT 				2
+#define SM_TYPE_ID_DOUBLE 					3
+#define SM_TYPE_ID_POINTER_DOUBLE 			4
+#define SM_TYPE_ID_STD_STRING 				5
+#define SM_TYPE_ID_POINTER_STD_STRING 		6
+#define SM_TYPE_ID_CHAR 					7
+#define SM_TYPE_ID_POINTER_CHAR 			8
+#define SM_TYPE_ID_UINT 					9
+#define SM_TYPE_ID_POINTER_UINT 			10
+#define SM_TYPE_ID_UCHAR 					11
+#define SM_TYPE_ID_POINTER_UCHAR 			12
+#define SM_TYPE_ID_FLOAT 					13
+#define SM_TYPE_ID_POINTER_FLOAT 			14
+#define SM_TYPE_ID_SHORT 					15
+#define SM_TYPE_ID_POINTER_SHORT 			16
+
+class SMCoreCouncil
 {
 public:
+	static int TypeID(int a)
+	{				
+		return SM_TYPE_ID_INT;
+	}
 
-	virtual void getState_Data(SMDATA& state_Value) = 0;
-	virtual void setState_Data(SMDATA state_Value) = 0;
+	static int TypeID(int* a)
+	{		
+		return SM_TYPE_ID_POINTER_INT;
+	}
 
-	virtual SMDATA pointerToState_Data() = 0;
+	static int TypeID(double a)
+	{
+		return SM_TYPE_ID_DOUBLE;
+	}
+
+	static int TypeID(double* pa)
+	{
+		return SM_TYPE_ID_POINTER_DOUBLE;
+	}
+};
+
+class SMCore 
+{
+protected:
+	virtual void unsafe_getStateData(SMDATA& state_Value) = 0;
+	virtual void unsafe_setStateData(SMDATA state_Value) = 0;
+
+	virtual SMDATA unsafe_pointerStateData() = 0;
 
 	virtual int TypeOfState() = 0;
 	virtual int TypeOfInput() = 0;
 	virtual int TypeOf_Output() = 0;
 
-	virtual SMDATA newOutputData() = 0;
-	virtual void delOutputData(SMDATA) = 0;
+	virtual SMDATA unsafeNewOutputData() = 0;
+	virtual void unsafeDelOutputData(SMDATA) = 0;
 
-	virtual int step(SMDATA input, SMDATA& output) = 0;
+	virtual int unsafe_step(SMDATA input, SMDATA& output) = 0;
 	// virtual int getNextValues(SMDATA currentState, SMDATA input, SMDATA& newstateVal, SMDATA& outputValue) = 0;
+
+	template<typename T, typename U> friend class SMCascade;
+	template<typename T> friend class SMFeedback;
 };
 
 template<typename T_State, typename T_I, typename T_O>
@@ -341,15 +384,15 @@ public:
 		return ts;
 	}	
 
-public:
+protected:
 	// Get state
-	void getState_Data(SMDATA& state_Value)
+	void unsafe_getStateData(SMDATA& state_Value)
 	{
 		T_State* p = (T_State*)state_Value;
 		*p = ts;
 	}
 
-	void setState_Data(SMDATA state_Value)
+	void unsafe_setStateData(SMDATA state_Value)
 	{
 		T_State* p = (T_State*) state_Value;
 		ts = *p;
@@ -357,25 +400,25 @@ public:
 
 	int TypeOfState() 
 	{
-		return 0;
+		return SMCoreCouncil::TypeID(ts);
 	}
 
 	int TypeOfInput() 
 	{
-		return 0;
+		return SMCoreCouncil::TypeID(ti);
 	}
 
 	int TypeOf_Output() 
 	{
-		return 0;
+		return SMCoreCouncil::TypeID(to);
 	}
 
-	SMDATA pointerToState_Data() 
+	SMDATA unsafe_pointerStateData() 
 	{
 		return (SMDATA)&ts;
 	}
 
-	virtual SMDATA newOutputData()
+	virtual SMDATA unsafeNewOutputData()
 	{
 		T_O* t = new T_O;
 		SMDATA pData = (SMDATA)t;
@@ -383,13 +426,13 @@ public:
 		return pData;
 	}
 
-	virtual void delOutputData(SMDATA pData) 
+	virtual void unsafeDelOutputData(SMDATA pData) 
 	{
 		T_O* p = (T_O*)pData;
 		delete p;
 	}
 
-	int step(SMDATA input, SMDATA& output) 
+	int unsafe_step(SMDATA input, SMDATA& output) 
 	{
 		T_O* p_OutCasted = (T_O*)output;
 		
@@ -440,6 +483,8 @@ public:
 	
 private:
 	T_State ts;
+	T_I ti;
+	T_O to;
 };
 
 class CAnyValue 
@@ -538,3 +583,4 @@ private:
 // };
 
 #endif /* APP_FUNDAMENTAL_IMPL_STATEMACHINE_SM_H_ */
+
