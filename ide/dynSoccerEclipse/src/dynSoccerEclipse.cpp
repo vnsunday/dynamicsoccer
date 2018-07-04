@@ -14,6 +14,8 @@
 #include "app/fundamental/impl/test/CNumberTest.h"
 #include "app/test/CTestMITStateMachine.h"
 
+#include "app/fundamental/impl/statemachine/sm_core.h"
+
 using namespace std;
 
 int f(int a)
@@ -72,6 +74,21 @@ int testStateMachine()
 
 	printf("Casecase Delay\r\n");
 	Console::log(vCascadeOut);
+
+
+	SMCore* pCore;
+	SMEx* pEx;
+	SMEx2* pEx2;
+
+	pCore = new SMEx2();
+	pEx = new SMEx2();
+	pEx2 = new SMEx2();
+
+	pCore->next(NULL);
+	pEx->Test();
+	pEx->next(NULL);
+	pEx2->Test2();
+	pEx2->next(NULL);
 
 	/*
 	smDelay.start();

@@ -1,8 +1,9 @@
 #include <iostream>
 #include <stdlib.h>
+#include <stdio.h>
 
-int main(int argc, char const *argv[])
+int main2(int argc, char const *argv[])
 {
-	printf("Test%s\n", );
+	printf("Test\r\n");
 	return 0;
 }

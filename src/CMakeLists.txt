@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 project( main  )
-include_directories(./app)
+include_directories(./)
 file(GLOB SOURCES "main.cpp" 
 					"app/cvplayer/impl/player/*.cpp"
 					"app/fundamental/impl/number/*.cpp"

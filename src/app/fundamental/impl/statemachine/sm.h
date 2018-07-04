@@ -80,18 +80,6 @@ struct TripleField
 	}
 };
 
-class SMCore 
-{
-public:
-	virtual ~SMCore() {}
-
-	void test()
-	{
-		std::type_info i;
-		
-	}
-};
-
 // template<typename T, typename T_I, typename T_O>
 template<class T, class T_I, class T_O>
 class MITSM
@@ -323,32 +311,47 @@ class SMCore
 {
 public:
 
-	virtual void getState(SMDATA& state_Value) = 0;
-	virtual void setState(SMDATA state_Value) = 0;
+	virtual void getState_Data(SMDATA& state_Value) = 0;
+	virtual void setState_Data(SMDATA state_Value) = 0;
+
+	virtual SMDATA pointerToState_Data() = 0;
 
 	virtual int TypeOfState() = 0;
 	virtual int TypeOfInput() = 0;
 	virtual int TypeOf_Output() = 0;
 
+	virtual SMDATA newOutputData() = 0;
+	virtual void delOutputData(SMDATA) = 0;
+
 	virtual int step(SMDATA input, SMDATA& output) = 0;
-	virtual int getNextValues(SMDATA currentState, SMDATA input, SMDATA& newstateVal, SMDATA& outputValue) = 0;
+	// virtual int getNextValues(SMDATA currentState, SMDATA input, SMDATA& newstateVal, SMDATA& outputValue) = 0;
 };
 
 template<typename T_State, typename T_I, typename T_O>
 class SMBase : public SMCore
 {
 public:
-	
-	// Get state
-	 void getState(SMDATA& state_Value)
+	void setStateVal(T_State v)
 	{
-		T* p = (T*)state_Value;
+		ts = v;
+	}
+
+	T_State myState()
+	{
+		return ts;
+	}	
+
+public:
+	// Get state
+	void getState_Data(SMDATA& state_Value)
+	{
+		T_State* p = (T_State*)state_Value;
 		*p = ts;
 	}
 
-	void setState(SMDATA state_Value)
+	void setState_Data(SMDATA state_Value)
 	{
-		T* p = (T*) state_Value;
+		T_State* p = (T_State*) state_Value;
 		ts = *p;
 	}
 
@@ -367,28 +370,76 @@ public:
 		return 0;
 	}
 
+	SMDATA pointerToState_Data() 
+	{
+		return (SMDATA)&ts;
+	}
+
+	virtual SMDATA newOutputData()
+	{
+		T_O* t = new T_O;
+		SMDATA pData = (SMDATA)t;
+
+		return pData;
+	}
+
+	virtual void delOutputData(SMDATA pData) 
+	{
+		T_O* p = (T_O*)pData;
+		delete p;
+	}
+
 	int step(SMDATA input, SMDATA& output) 
 	{
-		T_I input01;
-		T_O output1;
-
+		T_O* p_OutCasted = (T_O*)output;
 		
+		T_I input01 = *((T_I*) input);
+		(*p_OutCasted) = step(input01);
+
+		return 0;
 	}
 
-	virtual int getNextValues(SMDATA currentState, SMDATA input, SMDATA& newstateVal, SMDATA& outputValue) = 0;	
+	/*
+	virtual int getNextValues(SMDATA currentState, SMDATA input, SMDATA& newstateVal, SMDATA& outputValue) 
+	{
+		T_State tCurrentState = *((T_State*)currentState);
+		T_I t_inp = *((T_I*) input);
+		T_O* t_Out = (T_O*) outputValue;
 
+		T_State t_State = getNextValues(tCurrentState, t_inp, *t_Out);
+		T_State* p_Out_State = (T_State*) newstateVal;
+
+		*p_Out_State = t_State;
+		return 0;
+	}
+	*/
+
+public:
+	virtual T_State getNextValues(T_State current_State, T_I input, T_O& out) = 0;
+
+	virtual T_O step(T_I input)
+	{
+		T_O o;
+		T_State stateOutVal = getNextValues(myState(), input, o);
+
+		setStateVal(stateOutVal);
+		return o;
+	}
+
+	int transduce(T_I inputs[], int n, std::vector<T_O>& output)
+	{
+		// int n = sizeof((inputs))/sizeof(T_I);
+		output.clear();
+		for (int i=0;i<n;i++)
+		{
+			output.push_back(step(inputs[i]));
+		}
+
+		return 0;
+	}
+	
 private:
 	T_State ts;
-}
-
-
-class SMEx : public SMCore
-{
-public:
-	void start()
-	{
-
-	}
 };
 
 class CAnyValue 
