@@ -125,8 +125,8 @@ protected:
 									SMDATA& p_New_State,
 									SMDATA& p_Out) = 0;
 
-	// template<typename T, typename U> friend class MITSMCascade;
-	// template<typename T> friend class MITSMFeedback;
+	template<typename T, typename U> friend class MITSMCascade;
+	template<typename T> friend class MITSMFeedback;
 
 public: 
 	static int TypeID(int a)
@@ -711,33 +711,53 @@ private:
  *	T_StateOfEngine: The type of state of pEngine
  * 
  */
-template <typename T, typename T_StateOfEngine>
+template <typename T>
 class MITSMFeedback : public MITSM<T, int, T>
 {
 public:
-	MITSMFeedback(MITSM<T_StateOfEngine, T, T>* pEngine)
+	MITSMFeedback(T init_StateVal, MITSMCore* pEngine) : MITSM<T,int,T>(init_StateVal)
 	{
+		T one_T;
+		assert(pEngine->TypeOfInput() == MITSMCore::TypeID(one_T));
+		assert(pEngine->TypeOfInput() == pEngine->TypeOf_Output());
+
 		_pEng = pEngine;
 	}
 	
 	T getNextValues(T current_State, int input, T& output)
 	{
-		T val;
-		_pEng->getNextValues(_pEng->myState(), current_State, val);
+		
+		T new_Stt;
+		SMDATA pNewStt;
+		SMDATA p_Out;
 
-		output = val;
-		return val;	// State store the new value
+		pNewStt = (SMDATA)&new_Stt;
+		p_Out = (SMDATA)&output;
+
+		_pEng->unsafeGetNextValues(
+			_pEng->unsafe_pointerStateData(),
+			_pEng->unsafe_pointerStateData(),
+			pNewStt,
+			p_Out
+		);
+
+		return new_Stt;	// State store the new value
 	}
 
 	T step(int input)
 	{
-		T output =  _pEng->step(this->state);	
-		this->state = output;	// Store the new value			
-		return output;
+		T toutput;
+		T state = this->myState();
+
+		SMDATA p_Stt = (SMDATA)&state;
+		SMDATA p_Out = (SMDATA) &toutput;
+		
+		_pEng->unsafe_step(p_Stt, p_Out);
+		return toutput;
 	}
 	
 private:
-	MITSM<T_StateOfEngine, T, T>* _pEng;
+	MITSMCore* _pEng;
 };
 
 // #define ANYTYPE void*
