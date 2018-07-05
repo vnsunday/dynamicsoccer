@@ -11,6 +11,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <stdio.h>
+#include <cassert>
 
 template <typename T>
 struct DoubleT
@@ -80,12 +81,81 @@ struct TripleField
 	}
 };
 
+#define ANYOBJ void*
+#define SMDATA void*
+
+#define SM_TYPE_ID_INT 						1
+#define SM_TYPE_ID_POINTER_INT 				2
+#define SM_TYPE_ID_DOUBLE 					3
+#define SM_TYPE_ID_POINTER_DOUBLE 			4
+#define SM_TYPE_ID_STD_STRING 				5
+#define SM_TYPE_ID_POINTER_STD_STRING 		6
+#define SM_TYPE_ID_CHAR 					7
+#define SM_TYPE_ID_POINTER_CHAR 			8
+#define SM_TYPE_ID_UINT 					9
+#define SM_TYPE_ID_POINTER_UINT 			10
+#define SM_TYPE_ID_UCHAR 					11
+#define SM_TYPE_ID_POINTER_UCHAR 			12
+#define SM_TYPE_ID_FLOAT 					13
+#define SM_TYPE_ID_POINTER_FLOAT 			14
+#define SM_TYPE_ID_SHORT 					15
+#define SM_TYPE_ID_POINTER_SHORT 			16
+
+class MITSMCore 
+{
+protected:
+	virtual void unsafe_getStateData(SMDATA& state_Value) = 0;
+	virtual void unsafe_setStateData(SMDATA state_Value) = 0;
+
+	virtual SMDATA unsafe_pointerStateData() = 0;
+
+	virtual int TypeOfState() = 0;
+	virtual int TypeOfInput() = 0;
+	virtual int TypeOf_Output() = 0;
+
+	virtual SMDATA unsafeNewOutputData() = 0;
+	virtual void unsafeDelOutputData(SMDATA) = 0;
+
+	virtual SMDATA unsafe_NewStateData() = 0;
+	virtual void unsafe_DelStateData(SMDATA) = 0;
+
+	virtual int unsafe_step(SMDATA input, SMDATA& output) = 0;
+
+	virtual int unsafeGetNextValues(SMDATA pCurrentState, SMDATA p_Input,
+									SMDATA& p_New_State,
+									SMDATA& p_Out) = 0;
+
+	// template<typename T, typename U> friend class MITSMCascade;
+	// template<typename T> friend class MITSMFeedback;
+
+public: 
+	static int TypeID(int a)
+	{				
+		return SM_TYPE_ID_INT;
+	}
+
+	static int TypeID(int* a)
+	{		
+		return SM_TYPE_ID_POINTER_INT;
+	}
+
+	static int TypeID(double a)
+	{
+		return SM_TYPE_ID_DOUBLE;
+	}
+
+	static int TypeID(double* pa)
+	{
+		return SM_TYPE_ID_POINTER_DOUBLE;
+	}
+};
+
 // template<typename T, typename T_I, typename T_O>
-template<class T, class T_I, class T_O>
-class MITSM
+template<class T_State, class T_I, class T_O>
+class MITSM : public MITSMCore
 {
 	public:
-		MITSM(T initState)
+		MITSM(T_State initState)
 		{
 			startState_ = initState;
 		}
@@ -98,7 +168,7 @@ class MITSM
 			return 0;
 		}
 
-		virtual T getNextValues(T currentState, T_I input, T_O& output) = 0;
+		virtual T_State getNextValues(T_State currentState, T_I input, T_O& output) = 0;
 
 		virtual T_O step(T_I input)
 		{
@@ -112,7 +182,6 @@ class MITSM
 		{
 			// int n = sizeof((inputs))/sizeof(T_I);
 			output.clear();
-			printf("Size = %d\r\n", n);
 			for (int i=0;i<n;i++)
 			{
 				output.push_back(step(inputs[i]));
@@ -121,64 +190,187 @@ class MITSM
 			return 0;
 		}
 
-		T myState()
+		T_State myState()
 		{
 			return state;
 		}
 
+		void setStateVal(T_State v)
+		{
+			state = v;
+		}
+		
 	protected:
-		T state;
-		T startState_;
+		// Get state
+		void unsafe_getStateData(SMDATA& state_Value)
+		{
+			T_State* p = (T_State*)state_Value;
+			*p = state;
+		}
+
+		void unsafe_setStateData(SMDATA state_Value)
+		{
+			T_State* p = (T_State*) state_Value;
+			state = *p;
+		}
+
+		int TypeOfState() 
+		{
+			return MITSMCore::TypeID(state);
+		}
+
+		int TypeOfInput() 
+		{
+			return MITSMCore::TypeID(proto_Input);
+		}
+
+		int TypeOf_Output() 
+		{
+			return MITSMCore::TypeID(protoOutput);
+		}
+
+		SMDATA unsafe_pointerStateData() 
+		{
+			return (SMDATA)&state;
+		}
+
+		virtual SMDATA unsafeNewOutputData()
+		{
+			T_O* t = new T_O;
+			SMDATA pData = (SMDATA)t;
+
+			return pData;
+		}
+
+		virtual void unsafeDelOutputData(SMDATA pData) 
+		{
+			T_O* p = (T_O*)pData;
+			delete p;
+		}
+
+		SMDATA unsafe_NewStateData()
+		{
+			T_State* p = new T_State;
+			return (SMDATA)p;
+		}
+
+		void unsafe_DelStateData(SMDATA p)
+		{
+			T_State* pS = (T_State*)p;
+			delete pS;
+		}
+
+		int unsafe_step(SMDATA input, SMDATA& output) 
+		{
+			T_O* p_OutCasted = (T_O*)output;
+			
+			T_I input01 = *((T_I*) input);
+			(*p_OutCasted) = step(input01);
+
+			return 0;
+		}	
+
+		int unsafeGetNextValues(SMDATA pCurrentState, SMDATA p_Input,
+									SMDATA& p_New_State,
+									SMDATA& p_Out)
+		{
+			T_State ts;
+			T_State* p_StateCast = (T_State*) pCurrentState;
+
+			T_I ti;
+			T_I* pInput_Cast = (T_I*)p_Input;
+
+
+			ts = *p_StateCast;
+			ti = *pInput_Cast;
+
+			T_State* new_S = (T_State*)p_New_State;
+			T_O* new_O = (T_O*)p_Out;
+			
+			*new_S = getNextValues(ts, ti, *new_O);
+			return 0;
+		}
+	protected:
+		T_State state;
+		T_State startState_;
+		T_I proto_Input;
+		T_O protoOutput;
 };
 
-template<class T_State1, class T_I1, class T_O1, class T_State2, class T_O2>	// T_O1 == T_I2 ; Output 1 == Input2
-class MITSMCascade : public MITSM<int,T_I1,T_O2>
-// class MITSMCascade : public MITSM<T,T_IO,T_IO>
+template<class T_I, class T_O>
+class MITSMCascade : public MITSM<int,T_I,T_O>
 {
 public:
-	MITSMCascade(MITSM<T_State1,T_I1,T_O1>* p1, 
-	             MITSM<T_State2,T_O1,T_O2>* p2) :
-			MITSM<int,T_I1,T_O2>(0)
-			// MITSM<T,T_IO,T_IO>(p1->myState())
+	MITSMCascade(MITSMCore* p1,
+					MITSMCore* p2) :
+			MITSM<int,T_I,T_O>(0)
 	{
+		T_I i1;
+		T_O o1;
+
 		_p1 = p1;
 		_p2 = p2;
+
+		assert(_p1->TypeOfInput() == MITSMCore::TypeOfInput(i1));
+		assert(_p1->TypeOf_Output() == _p2->TypeOfInput());
+		assert(MITSMCore::TypeID(o1) == _p2->TypeOf_Output());		
 	}
 
-	int getNextValues(int currentState, T_I1 input, T_O2& output)
+	int getNextValues(int currentState, T_I input, T_O& output)
 	{
-		T_O1 out1;
-		T_O2 out2;
+		SMDATA new_State01 = _p1->unsafe_NewStateData();
+		SMDATA new_State02 = _p2->unsafe_NewStateData();
+		SMDATA newOut1 = _p1->unsafeNewOutputData();
+		SMDATA p_Out = (SMDATA)&output;
+		
+		_p1->unsafeGetNextValues(_p1->unsafe_pointerStateData(), 
+									(SMDATA)&input,
+									new_State01,
+									newOut1);
 
-		T_State1 nextState1_ = _p1->getNextValues(_p1->myState(), input, out1);
-		T_State2 nextState2_ = _p2->getNextValues(_p2->myState(), out1, out2);		
+		_p1->unsafeGetNextValues(_p2->unsafe_pointerStateData(),
+									newOut1,
+									new_State02,
+									p_Out);
+		
+		_p2->unsafe_DelStateData(new_State02);
+		_p1->unsafe_DelStateData(new_State01);		
+		_p1->unsafeDelOutputData(newOut1);
 
-		output = out2;
 		return this->state;
 	}
 
-	T_O2 step(T_I1 input)
+	T_O step(T_I input)
 	{
-		T_O1 o1 = _p1->step(input);
-		T_O2 o2 = _p2->step(o1);
+		T_O o;
 
-		return o2;
+		SMDATA out01;
+		SMDATA p_Out = (SMDATA)&o;
+		
+		out01 =  _p1->unsafeNewOutputData();
+		_p1->unsafe_step((SMDATA)&input, out01);
+		_p2->unsafe_step(out01, p_Out);
+
+		_p1->unsafeDelOutputData(out01);
+
+		return o;
 	}
 
-    MITSM<T_State1, T_I1, T_O1>* subMachine1()
+    MITSMCore* subMachine1()
 	{
 		return _p1;
 	}
 	
-	MITSM<T_State2, T_O1, T_O2>* subMachine2() 
+	MITSMCore* subMachine2() 
 	{
 		return _p2;
 	}	
 	
 private:
-	MITSM<T_State1, T_I1, T_O1>* _p1;
-	MITSM<T_State2, T_O1, T_O2>* _p2;
+	MITSMCore* _p1;
+	MITSMCore* _p2;
 };
+
 
 template<class T, class T_IO>	// Input & output has same type
 class MITSMCascade2 : public MITSM<int,T_IO,T_IO>
@@ -303,26 +495,6 @@ private:
 // 	virtual void* myState() = 0;
 // }
 };
-
-#define ANYOBJ void*
-#define SMDATA void*
-
-#define SM_TYPE_ID_INT 						1
-#define SM_TYPE_ID_POINTER_INT 				2
-#define SM_TYPE_ID_DOUBLE 					3
-#define SM_TYPE_ID_POINTER_DOUBLE 			4
-#define SM_TYPE_ID_STD_STRING 				5
-#define SM_TYPE_ID_POINTER_STD_STRING 		6
-#define SM_TYPE_ID_CHAR 					7
-#define SM_TYPE_ID_POINTER_CHAR 			8
-#define SM_TYPE_ID_UINT 					9
-#define SM_TYPE_ID_POINTER_UINT 			10
-#define SM_TYPE_ID_UCHAR 					11
-#define SM_TYPE_ID_POINTER_UCHAR 			12
-#define SM_TYPE_ID_FLOAT 					13
-#define SM_TYPE_ID_POINTER_FLOAT 			14
-#define SM_TYPE_ID_SHORT 					15
-#define SM_TYPE_ID_POINTER_SHORT 			16
 
 class SMCoreCouncil
 {

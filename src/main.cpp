@@ -5,6 +5,7 @@
 
 #include "app/fundamental/impl/statemachine/sm.h"
 #include "app/fundamental/impl/statemachine/base_machine.h"
+#include "app/fundamental/impl/statemachine/MIT_Example.h"
 #include "app/util/Console.h"
 
 using namespace std;
@@ -32,6 +33,8 @@ int main(int argc, char const *argv[])
 
 	sm_02.transduce(inputs_int_, 9 , v_out);	
 	Console::log(v_out);
+
+		
 
 	return 0;
 }
