@@ -753,6 +753,8 @@ public:
 		SMDATA p_Out = (SMDATA) &toutput;
 		
 		_pEng->unsafe_step(p_Stt, p_Out);
+
+		this->setStateVal(toutput);
 		return toutput;
 	}
 	
