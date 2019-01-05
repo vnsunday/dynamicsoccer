@@ -7,6 +7,7 @@ file(GLOB SOURCES "main.cpp"
 					"app/cvplayer/impl/player/*.cpp"
 					"app/fundamental/impl/number/*.cpp"
 					"app/fundamental/impl/statemachine/*.cpp"
+					"app/fundamental/impl/soccer/*.cpp"
 					"app/fundamental/impl/test/*.cpp"
 					"app/util/*.cpp" )
 

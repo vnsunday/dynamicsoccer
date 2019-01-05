@@ -18,6 +18,8 @@ public:
     virtual std::string displayName() = 0;
     virtual int positions(std::vector<int>&) = 0;
     virtual int technique_ability() = 0;
+
+    virtual int kick() = 0;
 };
 
 #endif /* APP_FUNDAMENTAL_INTERFACE_SOCCER_IPLAYER_H_ */
