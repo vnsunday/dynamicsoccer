@@ -9,6 +9,7 @@ file(GLOB SOURCES "main.cpp"
 					"app/fundamental/impl/statemachine/*.cpp"
 					"app/fundamental/impl/soccer/*.cpp"
 					"app/fundamental/impl/test/*.cpp"
-					"app/util/*.cpp" )
+					"app/util/*.cpp"
+					"app/test/state_machine/switcher/*.cpp" )
 
 add_executable( main ${SOURCES} )

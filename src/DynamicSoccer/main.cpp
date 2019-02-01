@@ -7,6 +7,7 @@
 #include "app/fundamental/impl/statemachine/base_machine.h"
 #include "app/fundamental/impl/statemachine/MIT_Basic.h"
 #include "app/util/Console.h"
+#include "app/test/state_machine/switcher/CSwitcherTest.h"
 
 using namespace std;
 
@@ -45,6 +46,10 @@ int main(int argc, char const *argv[])
 	// sm_accu.start();
 	// sm_accu.transduce(inputs, 9, v_out);
 	Console::log(v_out);
+
+
+	CSwitcherTest switcherTest;
+	switcherTest.runTest();
 
 	return 0;
 }

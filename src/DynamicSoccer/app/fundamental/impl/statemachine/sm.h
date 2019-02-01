@@ -155,6 +155,11 @@ template<class T_State, class T_I, class T_O>
 class MITSM : public MITSMCore
 {
 	public:
+		MITSM()
+		{
+
+		}
+		
 		MITSM(T_State initState)
 		{
 			startState_ = initState;
@@ -177,7 +182,7 @@ class MITSM : public MITSMCore
 
 			return output;
 		}
-		
+
 		int transduce(T_I inputs[], int n, std::vector<T_O>& output)
 		{
 			// int n = sizeof((inputs))/sizeof(T_I);
