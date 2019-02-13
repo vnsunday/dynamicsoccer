@@ -41,12 +41,33 @@ struct CarFactoryState
     int wheelProduced;
     int engineProduced;
     int furnitureProduced;
+
+    CarFactoryState()
+    {
+        stateID = CAR_FURNITURE_STATE_INIT;
+        wheelProduced = 0;
+        engineProduced = 0;
+        furnitureProduced = 0;
+    }
+
+    bool completeProduce()
+    {
+        return wheelProduced && engineProduced && furnitureProduced;
+    }
 };
 
 struct CarFactoryMsg
 {
     int msgID;
     double data;
+
+    CarFactoryMsg()
+    {}
+    
+    CarFactoryMsg(int theID)
+    {
+        msgID = theID;
+    }
 };
 
 struct CarFactoryOut

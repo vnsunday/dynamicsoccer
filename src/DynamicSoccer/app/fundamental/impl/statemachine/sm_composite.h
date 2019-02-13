@@ -16,9 +16,9 @@ class SMComposite : public MITSM<T_S, T_I, T_O>
 public:
     SMComposite(std::vector<MITSM<T_S, T_I, T_O>* > vComposite)
     {
-        _mapComposite.clear();
         _vComposite.clear();
-        _vComposite.copy(vComposite.begin(), vComposite.end());
+        std::copy(vComposite.begin(), vComposite.end(), std::back_inserter(_vComposite));
+        // _vComposite.copy(vComposite.begin(), vComposite.end());
     }
 
     virtual int isThisACompositeState(T_S state) = 0;    // Return -1: if state is in composite machine; 
@@ -54,20 +54,23 @@ public:
     T_O step(T_I input)
     {
         T_O output;
-        T_O outputFake;
+        T_O outputSub;
 
-        T_S state = myState();
+        T_S originState = this->myState();
+        this->actionWhenIncomingMsg(originState, input);
 
-        int index = isThisACompositeState(state);
+        T_S newState = this->getNextValues(originState, input, output);
+        int index = isThisACompositeState(newState);
 
+        // Entering Sub-Machine (composited-machine)
         if (index >= 0 && index < _vComposite.size())
         {
-            MITSM<T_S, T_I, T_O>* pSubMachine = _vComposite[index]  ; //_mapComposite[myState()];
-            pSubMachine->getNextValues( pSubMachine->myState(), input, output);
-
-            return output;
+            MITSM<T_S, T_I, T_O>* pSubMachine = _vComposite[index]  ;
+            pSubMachine->getNextValues( pSubMachine->myState(), input, output); // Let sub-machine process the input and get Output            
         }
-        state = getNextValues(state, input, outputFake);
+        
+        this->state = newState;
+        this->actionAfterProcessState(originState, newState, input, output);
 
         return output;
     }

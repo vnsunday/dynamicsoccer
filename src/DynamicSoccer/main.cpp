@@ -8,10 +8,11 @@
 #include "app/fundamental/impl/statemachine/MIT_Basic.h"
 #include "app/util/Console.h"
 #include "app/test/state_machine/switcher/CSwitcherTest.h"
+#include "app/test/state_machine/CCompositeTest.h"
 
 using namespace std;
 
-int main(int argc, char const *argv[])
+int test_machine()
 {
 	SMDelay2<double> dl(2);
 	SMDelay2<double> dl2(3);
@@ -46,10 +47,16 @@ int main(int argc, char const *argv[])
 	// sm_accu.start();
 	// sm_accu.transduce(inputs, 9, v_out);
 	Console::log(v_out);
+	return 0;
+}
 
-
+int main(int argc, char const *argv[])
+{
 	CSwitcherTest switcherTest;
 	switcherTest.runTest();
+
+	CCompositeTest compositeTest;
+	compositeTest.run();
 
 	return 0;
 }

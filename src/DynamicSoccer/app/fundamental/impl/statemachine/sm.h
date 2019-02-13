@@ -81,6 +81,7 @@ struct TripleField
 	}
 };
 
+
 #define ANYOBJ void*
 #define SMDATA void*
 
@@ -178,7 +179,13 @@ class MITSM : public MITSMCore
 		virtual T_O step(T_I input)
 		{
 			T_O output;
+
+			actionWhenIncomingMsg(state, input);
+
+			T_State originState = state;
 			state = getNextValues(state, input, output);
+
+			actionAfterProcessState(originState, state, input, output);
 
 			return output;
 		}
@@ -204,6 +211,9 @@ class MITSM : public MITSMCore
 		{
 			state = v;
 		}
+
+		virtual int actionWhenIncomingMsg(T_State currentState, T_I msg) { return 0; }
+		virtual int actionAfterProcessState(T_State originState, T_State newState, T_I msg, T_O output) { return 0; }
 		
 	protected:
 		// Get state
@@ -219,19 +229,26 @@ class MITSM : public MITSMCore
 			state = *p;
 		}
 
+		// TODO: Re-implementation
 		int TypeOfState() 
 		{
-			return MITSMCore::TypeID(state);
+			// TODO: Re-implementation
+			// return MITSMCore::TypeID(state);
+			return 0;
 		}
 
 		int TypeOfInput() 
 		{
-			return MITSMCore::TypeID(proto_Input);
+			// TODO: Re-implementation
+			// return MITSMCore::TypeID(proto_Input);
+			return 0;
 		}
 
 		int TypeOf_Output() 
 		{
-			return MITSMCore::TypeID(protoOutput);
+			// TODO: Re-implementation
+			// return MITSMCore::TypeID(protoOutput);
+			return 0;
 		}
 
 		SMDATA unsafe_pointerStateData() 
