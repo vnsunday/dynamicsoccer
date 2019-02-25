@@ -17,6 +17,7 @@ public:
     virtual double getNextValues(double currentState, double input, double& output)
     {
         output = input * input;
+		return currentState;
     }
 };
 
@@ -26,6 +27,7 @@ public:
     virtual double getNextValues(double currentState, double input, double& output)
     {
         output = 2 * input;
+		return currentState;
     }
 };
 

@@ -57,6 +57,8 @@ public:
         {
             _index_Active = _vSwitcher.size() - 1;
         }
+
+		return 0;
     }
 
     virtual int navigation(T_I incomingMsg, int& processedIndex) = 0;
