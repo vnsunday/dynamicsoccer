@@ -15,7 +15,7 @@ public:
 	virtual ~IPhysicLaw() {}
 
     virtual int next_state(void* object) = 0;                           // General law
-    virtual int straight_move(double v, double x0, double t) = 0;
+    virtual double straight_move(double v, double x0, double t) = 0;
 };
 
 #endif 
