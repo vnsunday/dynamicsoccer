@@ -14,7 +14,8 @@ class IPhysicLaw
 public:
 	virtual ~IPhysicLaw() {}
 
-    int next_state(void* object) = 0;
+    virtual int next_state(void* object) = 0;                           // General law
+    virtual int straight_move(double v, double x0, double t) = 0;
 };
 
 #endif 
