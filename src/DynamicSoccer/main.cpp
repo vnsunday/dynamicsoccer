@@ -25,7 +25,6 @@ int test_machine()
 	//sm_01.step(5);
 	//sm_01.step(6);
 	//sm_01.step(7);
-
 	double inputs[] = { 5, 10, 15, 20, 25 , 26, 27, 28, 29};
 	int inputs_int_[] = { 5, 10, 15, 20, 25 , 26, 27, 28, 29};
 	vector<double> v_out;

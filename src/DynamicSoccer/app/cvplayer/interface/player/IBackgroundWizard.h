@@ -4,7 +4,7 @@
 class IBackgroundWizard
 {
 public:
-	
+    
 };
 
 #endif
