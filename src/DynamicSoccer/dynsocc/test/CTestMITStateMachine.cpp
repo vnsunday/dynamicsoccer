@@ -1,7 +1,7 @@
 
 #include "CTestMITStateMachine.h"
-#include "app/util/Console.h"
-#include "app/fundamental/impl/statemachine/MIT_Example.h"
+#include "dynsocc/util/Console.h"
+#include "dynsocc/fundamental/impl/statemachine/MIT_Example.h"
 
 #include <string>
 #include <vector>

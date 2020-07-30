@@ -2,7 +2,7 @@
 #ifndef APP_TEST_STATEMACHINE_SWITCHER_CSWITCHERTEST_H_
 #define APP_TEST_STATEMACHINE_SWITCHER_CSWITCHERTEST_H_
 
-#include  "app/fundamental/impl/statemachine/sm_switcher.h"
+#include  "dynsocc/fundamental/impl/statemachine/sm_switcher.h"
 
 /* 
  * StateMachine do the discrete function:

@@ -5,7 +5,7 @@
  *      Author: spider
  */
 
-#include <app/util/TestUtil.h>
+#include <dynsocc/util/TestUtil.h>
 #include <stdlib.h>
 #include <stdio.h>
 

@@ -5,13 +5,13 @@
  *      Author: spider
  */
 
-#include <app/fundamental/impl/test/CNumberTest.h>
-#include <app/fundamental/impl/number/SNumber.h>
+#include <dynsocc/fundamental/impl/test/CNumberTest.h>
+#include <dynsocc/fundamental/impl/number/SNumber.h>
 #include <sstream>
 #include <string>
 #include <fstream>
 #include <string.h>
-#include "app/util/TestUtil.h"
+#include "dynsocc/util/TestUtil.h"
 
 using namespace std;
 

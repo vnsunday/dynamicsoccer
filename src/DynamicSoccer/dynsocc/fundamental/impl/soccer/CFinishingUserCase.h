@@ -8,8 +8,8 @@
 #ifndef APP_FUNDAMENTAL_IMPL_SOCCER_CFINISHINGUSERCASE_H_
 #define APP_FUNDAMENTAL_IMPL_SOCCER_CFINISHINGUSERCASE_H_
 
-#include "app/fundamental/interface/soccer/IPlayer.h"
-#include "app/fundamental/interface/soccer/IUserCase.h"
+#include "dynsocc/fundamental/interface/soccer/IPlayer.h"
+#include "dynsocc/fundamental/interface/soccer/IUserCase.h"
 
 class CFinishingUserCase : public IUserCase
 {

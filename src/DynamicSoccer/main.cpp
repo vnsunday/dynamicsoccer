@@ -3,12 +3,12 @@
 #include <stdio.h>
 #include <vector>
 
-#include "app/fundamental/impl/statemachine/sm.h"
-#include "app/fundamental/impl/statemachine/base_machine.h"
-#include "app/fundamental/impl/statemachine/MIT_Basic.h"
-#include "app/util/Console.h"
-#include "app/test/state_machine/switcher/CSwitcherTest.h"
-#include "app/test/state_machine/CCompositeTest.h"
+#include "dynsocc/fundamental/impl/statemachine/sm.h"
+#include "dynsocc/fundamental/impl/statemachine/base_machine.h"
+#include "dynsocc/fundamental/impl/statemachine/MIT_Basic.h"
+#include "dynsocc/util/Console.h"
+#include "dynsocc/test/state_machine/switcher/CSwitcherTest.h"
+#include "dynsocc/test/state_machine/CCompositeTest.h"
 
 using namespace std;
 

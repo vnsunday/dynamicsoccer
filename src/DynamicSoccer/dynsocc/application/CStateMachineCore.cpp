@@ -1,5 +1,5 @@
 #include "CStateMachineCore.h"
-#include "app/fundamental/impl/statemachine/sm.h"
+#include "dynsocc/fundamental/impl/statemachine/sm.h"
 
 #include <iostream>
 using namespace std;

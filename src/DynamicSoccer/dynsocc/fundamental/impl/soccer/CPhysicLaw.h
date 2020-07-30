@@ -1,7 +1,7 @@
 #ifndef APP_FUNDAMENTAL_IMPL_SOCCER_CPHYSICLAW_H_
 #define APP_FUNDAMENTAL_IMPL_SOCCER_CPHYSICLAW_H_
 
-#include "app/fundamental/interface/soccer/IPhysicLaw.h"
+#include "dynsocc/fundamental/interface/soccer/IPhysicLaw.h"
 
 class CPhysicLaw : public IPhysicLaw
 {

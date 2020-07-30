@@ -1,7 +1,7 @@
 #ifndef APP_TEST_STATEMACHINE_CCOMPOSITETEST_H_
 #define APP_TEST_STATEMACHINE_CCOMPOSITETEST_H_
 
-#include "app/fundamental/impl/statemachine/sm_composite.h"
+#include "dynsocc/fundamental/impl/statemachine/sm_composite.h"
 #include <string>
 
 /* 
