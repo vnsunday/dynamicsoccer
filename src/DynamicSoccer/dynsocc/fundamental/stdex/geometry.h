@@ -1,6 +1,7 @@
 #ifndef DYNSOCC_FUNDAMENTAL_STDEX_GEOMETRY_H_
 #define DYNSOCC_FUNDAMENTAL_STDEX_GEOMETRY_H_
 
+#include "stdex.h"
 #include "rect.h"
 
 namespace dynsocc

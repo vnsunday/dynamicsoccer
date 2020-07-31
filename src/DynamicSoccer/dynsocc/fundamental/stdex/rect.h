@@ -10,7 +10,18 @@ namespace dynsocc
         int w;
         int h;
 
-        Rectangle(int x1,int y1, int w1, int h1);       
+        Rectangle();
+        Rectangle(int x1,int y1, int w1, int h1);
+
+        bool isEmpty(); // Zero area or none existed
+
+        bool isNULL(); // Not existed (width or height < 0)
+
+        bool hasShape();
+
+        bool operator==(const Rectangle& rc);
+
+        bool operator!=(const Rectangle& rc);
     };
 }
 
