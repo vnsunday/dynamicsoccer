@@ -1,6 +1,6 @@
 
 #include "rect.h"
-
+#include <string>
 using namespace dynsocc;
 
 Rectangle::Rectangle()
@@ -48,4 +48,11 @@ bool Rectangle::operator!=(const Rectangle& rc)
 bool Rectangle::hasShape()
 {
     return !isEmpty() && !isNULL();
+}
+
+std::string Rectangle::toString()
+{
+    char szBuff[200];
+    sprintf(szBuff,"[x,y,w,h=(%d,%d,%d,%d)]", x, y, w,h);
+    return std::string(szBuff);
 }

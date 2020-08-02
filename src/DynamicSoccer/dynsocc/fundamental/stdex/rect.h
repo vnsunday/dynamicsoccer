@@ -1,6 +1,8 @@
 #ifndef DYNSOCC_FUNDAMENTAL_STDEX_RECT_H_
 #define DYNSOCC_FUNDAMENTAL_STDEX_RECT_H_
 
+#include <string>
+
 namespace dynsocc
 {
     struct Rectangle
@@ -22,6 +24,8 @@ namespace dynsocc
         bool operator==(const Rectangle& rc);
 
         bool operator!=(const Rectangle& rc);
+
+        std::string toString();
     };
 }
 
