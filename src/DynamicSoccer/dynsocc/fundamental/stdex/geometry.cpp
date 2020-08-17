@@ -20,3 +20,12 @@ bool GeometryUtil::intersect(Rectangle rc1, Rectangle rc2)
                     rc2.y + rc2.h >= rc1.y && 
                     rc1.y + rc1.h >= rc2.y);
 }
+
+Rectangle GeometryUtil::move(Rectangle rc, int offsetX, int offsetY)
+{
+    Rectangle rc2 = rc;
+    rc2.x += offsetX;
+    rc2.y += offsetY;
+
+    return rc2;
+}

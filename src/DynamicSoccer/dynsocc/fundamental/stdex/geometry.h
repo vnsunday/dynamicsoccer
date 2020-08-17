@@ -14,6 +14,7 @@ namespace dynsocc
 
             static bool intersect(Rectangle rc1, Rectangle rc2);
 
+            static Rectangle move(Rectangle rc, int offsetX, int offsetY);  
     };
 
 }
