@@ -25,6 +25,8 @@ public:
                                         cv::Vec3d v1,
                                         cv::Vec3d v2,
                                         cv::Vec3d& pout) = 0;
+
+    virtual int projectPointIntoLine(cv::Vec3d p, cv::Vec3d A, cv::Vec3d B, cv::Vec3d& pout) = 0;
 };
 
 #endif
