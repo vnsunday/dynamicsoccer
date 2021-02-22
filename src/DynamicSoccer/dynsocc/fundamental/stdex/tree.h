@@ -34,6 +34,12 @@ namespace dynsocc
 	 struct TreeNodeAddress
 	 {
 		 unsigned char a[10];	// Maximum 10 Tree Level
+         int n;
+
+         TreeNodeAddress()
+         {
+             n = 0;
+         }
 	 };
 
 	 typedef unsigned char TreeNodeAddr;
@@ -49,7 +55,10 @@ namespace dynsocc
 
     struct TreeVec
     {
-        std::vector<TreeVecNode> data;
+        std::vector<TreeVecNode> data;      // Raw data
+        TreeNodeAddress mapTrR[100];    // Map TreeAddress to RawData address
+        
+
         
         TreeVecNode newNode()
         {
@@ -74,14 +83,22 @@ namespace dynsocc
         int removeNode(int nodeId)
         {
             // Remove ID => Recalculate whole ID? 
-            
-            
+            // 
+            int i = 0;
+            data[i];
+
             return 0;
         }
 
         int getChild(int nodeId, std::vector<TreeVecNode>& vchild)
         {
             vchild.clear();
+            int l01 = data.size();
+
+            for (int i=0; i<l01; ++i)
+            {
+                
+            }
             return 0;
         }
 
