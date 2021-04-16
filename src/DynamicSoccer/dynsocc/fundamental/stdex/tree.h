@@ -24,6 +24,16 @@ namespace dynsocc
     };
 
     struct TreeVec;
+	 typedef unsigned char TreeNodeAddr;
+	 struct TreeVecNode
+	 {
+		 int myid;
+		 int parentid;
+		 std::vector<int> childid;
+
+		 int data;
+	 };
+
     // Tree based on vector
     struct ITreeVecTravesal
     {
@@ -31,35 +41,32 @@ namespace dynsocc
         virtual int onTravelNode(TreeVecNode& node) = 0;
     };
 
-	 struct TreeNodeAddress
-	 {
+    // Definition of a Tree.
+    struct TreeNodeAddress
+	{
 		 unsigned char a[10];	// Maximum 10 Tree Level
          int n;
+         int myRaw;
 
          TreeNodeAddress()
          {
              n = 0;
          }
-	 };
+	};
 
-	 typedef unsigned char TreeNodeAddr;
-
-    struct TreeVecNode
-    {
-        int myid;
-        int parentid;
-        std::vector<int> childid;
-
-        int data;
-    };
-
+    /* 
+     * Implement a tree with:
+     *  (1) Maximum 10 deep level
+     *  (2) 
+     */
     struct TreeVec
     {
         std::vector<TreeVecNode> data;      // Raw data
-        TreeNodeAddress mapTrR[100];    // Map TreeAddress to RawData address
-        
+        TreeNodeAddress mapTrR[100];        // Map TreeAddress to RawData address
+                                            // mapTrR: TreeAddress -> RawAddress)
+        TreeNodeAddress addr001;
+        unsigned char* buffer;
 
-        
         TreeVecNode newNode()
         {
             TreeVecNode n1;
@@ -68,7 +75,7 @@ namespace dynsocc
             n1.childid.clear();
 
             data.push_back(n1);
-        }
+       }
 
         TreeVecNode newChildNode(int parentId)
         {
@@ -78,6 +85,9 @@ namespace dynsocc
             n1.childid.clear();
 
             data.push_back(n1);
+
+
+            // Relationship Between 
         }
 
         int removeNode(int nodeId)
