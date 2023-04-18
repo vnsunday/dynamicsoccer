@@ -235,3 +235,290 @@ class TreeTechnique
 			return 0;
 		}
 };
+
+TreeAdj::TreeAdj()
+{
+	_n_id2index = 0;
+	_m_id2index_l[0] = 0;
+	_m_id2index_r[0] = 0;
+}
+
+int TreeAdj::add_node(int parent_id, std::string name)   // Parent-ID < 0 => Adding a root node 
+{
+	/*========================================================
+		Node management:
+			+ NodeAddress:
+				PhysicalAddress:	Index	(Access Physical memory)(Will change?)
+				UniqueID:			AutoID	
+			+ Manage:
+				AutoID to Index mapping (Map: vector of R^2)
+	 *========================================================*/
+
+	// Is Parent ID valid?
+	//	Performing Binary Searcheing
+	int nL = 0;
+	int nR = _n_id2index;
+	int nMid = (nL + nR) / 2;
+	int nFound = -1;
+
+	// is adding a Root Node?
+	if (parent_id < 0)
+	{
+		// Another Root Node is existed?
+		if (_nRootID >= 0)
+		{
+			// ??
+			throw "Root Node is existed";
+		}
+	}
+	else
+	{
+		while (nL <= nR && nFound < 0)
+		{
+			int nValMid = _m_id2index_l[nMid];
+			if (nValMid == parent_id)
+			{
+				nFound = nMid;
+			}
+			else if (parent_id < nValMid)
+			{
+				nR = nMid - 1;
+			}
+			else
+			{
+				nL = nMid + 1;
+			}
+		}
+
+		if (nFound < 0)
+		{
+			// 
+			throw "ParentID Invalid";
+		}
+	}
+	
+
+	// Vector of a Node 
+	_auto_id++;
+	int nID = _auto_id;		// Node Address
+	int nIndex = _nNode;	// Node Address
+	_nNode++;
+	
+	_vname[nIndex] = name;		
+	_vid[nIndex] = _auto_id;
+
+	
+	
+
+	// Add a mapping?
+	// 1st element sastified:
+	//		left[loc] >= new_key
+	// Validation?
+	//		
+	int nInsertLoc = 0;
+	while (nInsertLoc < _n_id2index && _m_id2index_l[nInsertLoc] < nID)
+	{
+		nInsertLoc++;	
+	}
+
+	if (nInsertLoc >= _n_id2index)	// Do not find => Insert at the end 
+	{
+		_m_id2index_l[_n_id2index] = nID;
+		_m_id2index_r[_n_id2index] = nIndex;
+		_n_id2index++;
+	}
+	else if (_m_id2index_l[nInsertLoc] == nID)		// Duplicate? => Replace
+	{
+		_m_id2index_r[_n_id2index] = nIndex;	// Replace
+	}
+	else
+	{
+		// Insert into right position 
+
+		//1) Move everything 1-position forward
+		for (int i = _n_id2index; i > nInsertLoc; i--)
+		{
+			_m_id2index_l[i] = _m_id2index_l[i - 1];
+			_m_id2index_r[i] = _m_id2index_r[i - 1];
+		}
+		_n_id2index++;
+
+		//2) Insert
+		_m_id2index_l[nInsertLoc] = nID;
+		_m_id2index_r[nInsertLoc] = nIndex;
+	}
+
+	// New Root Node
+	if (parent_id < 0)
+	{
+		_nRootID = nID;
+		return 0;
+
+	}
+
+	// Register Relationship Graph 
+	// Insert one relationship record (new_L,new_R) = (parent_id, new_id).
+	// 
+	// Find the smallest Location (loc) where: 
+	//		(vedgeL[loc] == new_L and vedgeR[loc]>=new_R)
+	//		or
+	//		(vedgeL[loc] >= new_L)
+	nInsertLoc = 0;
+	while (nInsertLoc < _n_edge &&
+		(_v_edge_l[nInsertLoc] < parent_id
+			||
+			(_v_edge_l[nInsertLoc] == parent_id && _v_edge_r[nInsertLoc] < nID)))
+	{
+		nInsertLoc++;
+	}
+
+	if (nInsertLoc >= _n_edge)
+	{
+		// Append at the last position
+		_v_edge_l[_n_edge] = parent_id;
+		_v_edge_r[_n_edge] = nID;
+		_n_edge++;
+	}
+	else
+	{
+		// Move everything one-position forward 
+		for (int i = _n_edge; i > nInsertLoc; i--)
+		{
+			_v_edge_l[i] = _v_edge_l[i - 1];
+			_v_edge_r[i] = _v_edge_r[i - 1];
+		}
+		_n_edge++;
+
+		// Insert
+		_v_edge_l[nInsertLoc] = parent_id;
+		_v_edge_r[nInsertLoc] = nID;
+	}
+	
+	return 0;
+}
+
+
+int TreeAdj::new_node(std::string name)						// Node only, stand alone
+{
+	_auto_id++;
+	int nID = _auto_id;
+	int nIndex = _nNode;
+	_nNode++;
+
+	_vname[nIndex] = name;
+
+	// Register mapping (ID,Index)
+	int nInsertLoc = 0;
+
+	while (nInsertLoc < _n_id2index && ( _m_id2index_l[nInsertLoc] <nID))
+	{
+		nInsertLoc++;
+	}
+
+	// Reach the end
+	if (nInsertLoc >= _n_id2index)
+	{
+		_m_id2index_l[_n_id2index] = nID;
+		_m_id2index_r[_n_id2index] = nIndex;
+		_n_id2index++;
+	}
+	else if (_m_id2index_l[nInsertLoc] == nID)	// Duplicate(??)
+	{
+		_m_id2index_r[nInsertLoc] = nIndex;		// Replacement
+	}
+	else
+	{
+		// Move everything 1 slot forward (starting from nInsertLoc+1)
+		for (int i = _n_id2index; i > nInsertLoc; i--)
+		{
+			_m_id2index_l[i] = _m_id2index_l[i - 1];
+			_m_id2index_r[i] = _m_id2index_r[i - 1];
+		}
+		_n_id2index++;
+
+		// Insert 
+		_m_id2index_l[nInsertLoc] = nID;
+		_m_id2index_r[nInsertLoc] = nIndex;
+	}
+
+	return 0;
+}
+
+int TreeAdj::get_node(int ID, std::string& data)
+{
+	// Binary Search
+	int nL = 0;
+	int nR = _n_id2index;
+	int nMid = (nL + nR) / 2;
+	int nVal; // 
+	int nFound = -1;
+
+	while (nL < nR && nFound < 0)
+	{
+		nVal = _m_id2index_l[nMid];
+
+		if (nVal == ID)
+		{
+			nFound = nMid;
+		}
+		else if (nVal < ID)
+		{
+			nR = nMid - 1;
+		}
+		else
+		{
+			nL = nMid + 1;
+		}
+	}
+
+	if (nFound >= 0)
+	{
+		int nIndex = _m_id2index_r[nFound];
+		data = _vname[nIndex];
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+int TreeAdj::remove_node(int node_id)
+{
+	/*
+		1. Remove node_id
+		2. Remove every descendants 
+	 */
+
+	int nID = node_id;
+
+	int nL = 0;
+	int nR = _n_id2index;
+	int nMid = 0;
+	int nFindIndex = -1;
+
+	algorithm::binary_search(_m_id2index_l, 0, _n_id2index, node_id, nFindIndex);
+	
+	
+
+	// Find every node with 
+	// Starting with n1
+	//	Ending with n1
+
+	int nL = 0;
+	int nR = 0;
+
+
+	// 1st position where: a[i]=v
+	// last position where a[i]=v
+
+
+	
+	
+
+	return 0;
+}
+int TreeAdj::move_node(int node_id, int new_parent_id)
+{
+	return 0;
+}

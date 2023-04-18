@@ -9,6 +9,7 @@
 #include "dynsocc/util/Console.h"
 #include "dynsocc/test/state_machine/switcher/CSwitcherTest.h"
 #include "dynsocc/test/state_machine/CCompositeTest.h"
+#include "dynsocc/fundamental/stdex/struct.hpp"
 
 using namespace std;
 
@@ -56,6 +57,11 @@ int main(int argc, char const *argv[])
 
 	CCompositeTest compositeTest;
 	compositeTest.run();
+
+	dynsocc::test_dvqueue::test();
+
+	int k = 2009;
+	printf("TTT %03d\r\n", k);
 
 	return 0;
 }

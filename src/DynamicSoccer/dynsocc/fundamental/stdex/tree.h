@@ -57,7 +57,6 @@ namespace dynsocc
     /* 
      * Implement a tree with:
      *  (1) Maximum 10 deep level
-     *  (2) 
      */
     struct TreeVec
     {
@@ -146,6 +145,144 @@ namespace dynsocc
             }
         }
     };
+
+	#define ADJTREE_MAX_NODE 100
+	#define ADJTREE_MAX_EDGE 1000
+
+    class TreeAdj
+    {
+		 
+		/* 
+			Primitive Operations: 
+			+ Node LifeCycle 
+				- Node Address:
+					+ ID (Unique value) 
+					+ Location (Physical location: index)
+				- Manage Node List Data (vector Node)
+				- Mange Node 
+			+ Edge LifeCycle 
+
+		 
+		 */
+        std::string _vname[ADJTREE_MAX_NODE];
+        int _vid[ADJTREE_MAX_NODE];
+		int _auto_id;
+		int _nNode;
+
+        int _v_edge_l[1000];
+        int _v_edge_r[1000];
+		int _n_edge;
+
+		int _nRootID;	// RootNode
+
+		// Binary Tree - Mapping (AutoID - Index)
+		int _m_id2index_l[1000];
+		int _m_id2index_r[1000];
+		int _n_id2index;
+
+	public:
+		TreeAdj();
+        int add_node(int parent_id, std::string name);		// Parent-ID < 0 => Adding a root node 
+		int new_node(std::string name);						// Node only, stand alone
+		int get_node(int ID, std::string& data);
+        int remove_node(int node_id);
+		int move_node(int node_id, int new_parent_id);
+		
+
+        //
+        // v_edge_l[i]=n
+        // v_edge_r[i]=m
+        //  => n is parent node of m.
+        // 
+        // Tree-ID.
+        //  vid[1]=i => 
+
+    private:
+        int add_relation_ship(int parent_id, int child_id);
+
+    };
+
+	class algorithm
+	{
+	public: 
+		template <typename T>
+		static int binary_search(T* arr_sorted_asc, int nBegin, int nEnd, T val, int& nFound)
+		{
+			int nL = nBegin;
+			int nR = nEnd;
+			int nMid = (nL + nR) / 2;
+			nFound = -1;
+			T valMid;
+			while (nL < nR && nFound < 0)
+			{
+				valMid = arr_sorted_asc[nMid];
+
+				if (valMid == val)
+				{
+					nFound = nMid;
+				}
+				else if (valMid < val)
+				{
+                    nL = nMid + 1;
+				}
+                else 
+                {
+                    nR = nMid - 1;
+                }
+			}
+
+			return 0;
+		}
+
+		template<typename T>
+		static int insert_into_sorted_asc(T* parr, int nBegin, int nEnd, T val, int& nPos)
+		{
+            // Pre-Requisite: parr is sorted asc (every i: p[i] <= p[i+1])
+           
+            // Find the 1st position (smallest) where 
+            //      parr[pos] < val
+            nPos = 0;
+            while (nPos < nEnd && parr[nPos] >= val) { nPos++; }
+
+            // Starting from nPos+1, move everything forward
+            for (int i=nEnd; i> nPos;i--)
+            {
+                parr[i] = parr[i-1];
+            }
+
+            // Insert at nPos
+            parr[nPos] = val;
+
+            return 0;
+		}
+
+        template<typename T>
+        static int insert_into_sorted_asc(T* parr, int nBegin, int nEnd, T val, int& nPos)
+        {
+            // Pre-requisite: parr is sorted desc (p[i] >= p[i+1], every i)
+            // 
+
+            // Inserted Position(i) = P[i] >= val >= p[i+1]
+            //  p[i] >= val >= p[i+1]
+            // Left To Right:
+            //      p[i] >= 
+            //  The smallest / largest  
+            //  Unique position:
+            //      U[i].
+            // 
+            // Unique position:
+            //      0
+            //  
+            {
+                // Desc sorted 
+                // Unique position 
+
+            }
+
+            return 0;
+        }
+
+	};
 };
 
 

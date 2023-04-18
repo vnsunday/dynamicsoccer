@@ -52,7 +52,6 @@ int CGeometry3D::projectPointIntoPlane(cv::Vec3d p,
 
 int CGeometry3D::projectPointIntoLine(cv::Vec3d p, cv::Vec3d A, cv::Vec3d B, cv::Vec3d& pout)
 {
-    //@TODO: 
     // --------------- projectPointIntoLine?
     /* 
         N = PA cross PB.
@@ -75,8 +74,6 @@ int CGeometry3D::projectPointIntoLine(cv::Vec3d p, cv::Vec3d A, cv::Vec3d B, cv:
     
     // Normal vector 
     Vec3d N = B.cross(A);
-
-
     Mat mA = (Mat_<double>(3,3) << 
         A[0]-B[0],  A[1]-B[1],  A[2]-B[2],
         N[0],       N[1],       N[2],

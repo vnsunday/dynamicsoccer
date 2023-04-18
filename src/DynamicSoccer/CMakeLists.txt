@@ -3,8 +3,8 @@ add_compile_options(-std=c++11)
 
 project( main  )
 include_directories(./)
-file(GLOB SOURCES "main.cpp" 
-					)
+file(GLOB SOURCES "main.cpp")
+file(GLOB APP_COPA21 "dynsocc/application/tournaments/CopaAmerica2021/copa_america_2k21.cpp")
 
 file(GLOB STATICLIBS "dynsocc/cvplayer/impl/player/*.cpp"
 					"dynsocc/fundamental/impl/number/*.cpp"
@@ -17,6 +17,9 @@ file(GLOB STATICLIBS "dynsocc/cvplayer/impl/player/*.cpp"
 					"dynsocc/test/state_machine/*.cpp" )					
 
 add_executable( main ${SOURCES} )
+add_executable( copa_america_2k21 ${APP_COPA21} )
+
 add_library(libdynsocc STATIC ${STATICLIBS})
 
 TARGET_LINK_LIBRARIES(main libdynsocc)
+TARGET_LINK_LIBRARIES(copa_america_2k21 libdynsocc)
