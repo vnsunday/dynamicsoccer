@@ -2,6 +2,7 @@
 #include <math.h>
 #include <algorithm>
 using namespace dynsocc;
+using namespace std;
 
 TreeEx::TreeEx()
 {
@@ -498,26 +499,45 @@ int TreeAdj::remove_node(int node_id)
 	int nFindIndex = -1;
 
 	algorithm::binary_search(_m_id2index_l, 0, _n_id2index, node_id, nFindIndex);
-	
-	
 
-	// Find every node with 
+	// Find every Edge, where is children of 
 	// Starting with n1
 	//	Ending with n1
+	int nLower, nHigher;
+	algorithm::binary_search(_v_edge_l, 0, _n_edge, node_id, nLower, nHigher);
 
-	int nL = 0;
-	int nR = 0;
+	if (nLower >= 0)
+	{
+		// binary map 
+	}
 
+	// Starting from, n1, n2 && 
+	// Find every children 
+	dvqueue<int> q1(100);
+	vector<int> v1;
+	q1.enqueue(node_id);
 
-	// 1st position where: a[i]=v
-	// last position where a[i]=v
+	int nnode;
 
+	while (!q1.empty())
+	{
+		assert(q1.dequeue(nnode)==0);
+		v1.push_back(nnode);
 
-	
-	
+		algorithm::binary_search(_v_edge_l, 0, _n_edge, nnode, nLower, nHigher);
+
+		if (nLower>=0)
+		{
+			for (int i=nLower; i<=nHigher;++i)
+			{
+				q1.enqueue(_v_edge_r[i]);
+			}
+		}
+	}
 
 	return 0;
 }
+
 int TreeAdj::move_node(int node_id, int new_parent_id)
 {
 	return 0;

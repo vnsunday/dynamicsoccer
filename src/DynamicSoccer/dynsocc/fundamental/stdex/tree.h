@@ -234,10 +234,56 @@ namespace dynsocc
 			return 0;
 		}
 
+        template <typename T>
+        static int binary_search(T* arr_sorted_asc, int nBegin, int nEnd, T val, int& nFoundBegin, int& nFoundEnd)
+        {
+            // Find every 
+            int nL = nBegin;
+            int nR = nEnd;
+            int nMid = (nL + nR) / 2;
+            int nFound = -1;
+            nFoundBegin = -1;
+            nFoundEnd = -1;
+
+            // The 1st location 
+            while (nL < nR && nFound < 0)
+            {
+                valMid = arr_sorted_asc[nMid];
+
+                if (valMid == val)
+                {
+                    nFound = nMid;
+                }
+                else if (valMid < val)
+                {
+                    nL = nMid + 1;
+                }
+                else 
+                {
+                    nR = nMid - 1;
+                }
+            }
+
+
+            if (nFound >=0)
+            {
+                nFoundBegin = nFound;
+                nFoundEnd = nFound;
+
+
+                while (nFoundBegin > nBegin && arr_sorted_asc[nFoundBegin-1] == val)  { nFoundBegin--;}
+                while (nFoundEnd < nEnd-1 && arr_sorted_asc[nFoundEnd+1] == val ) { nFoundEnd++;}
+            }
+            
+            return 0;
+        }
+
+        
 		template<typename T>
 		static int insert_into_sorted_asc(T* parr, int nBegin, int nEnd, T val, int& nPos)
 		{
             // Pre-Requisite: parr is sorted asc (every i: p[i] <= p[i+1])
+            // This function does not validate pre-requisite condition 
            
             // Find the 1st position (smallest) where 
             //      parr[pos] < val
@@ -252,7 +298,6 @@ namespace dynsocc
 
             // Insert at nPos
             parr[nPos] = val;
-
             return 0;
 		}
 
@@ -260,28 +305,29 @@ namespace dynsocc
         static int insert_into_sorted_asc(T* parr, int nBegin, int nEnd, T val, int& nPos)
         {
             // Pre-requisite: parr is sorted desc (p[i] >= p[i+1], every i)
-            // 
+            // If the pre-requisite condition is not meet => the result will incorrect, 
+            // This function does not validate pre-requisite condition.
 
-            // Inserted Position(i) = P[i] >= val >= p[i+1]
-            //  p[i] >= val >= p[i+1]
-            // Left To Right:
-            //      p[i] >= 
-            //  The smallest / largest  
-            //  Unique position:
-            //      U[i].
-            // 
-            // Unique position:
-            //      0
-            //  
+            // Find the 1st position where val >= p[loc]
+            nPos = nBegin;
+
+            while (nPos < nEnd && (val < parr[nPos]))
             {
-                // Desc sorted 
-                // Unique position 
-
+                nPos++;
             }
 
+            // Starting from nPos+1, move everything forward 1step
+            for (int i=nEnd;i>nPos;i--)
+            {
+                parr[i] = parr[i-1];
+            }
+
+            // Insert 
+            parr[nPos] = val;
             return 0;
         }
 
+                
 	};
 };
 
