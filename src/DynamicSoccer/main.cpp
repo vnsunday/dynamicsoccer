@@ -10,8 +10,10 @@
 #include "dynsocc/test/state_machine/switcher/CSwitcherTest.h"
 #include "dynsocc/test/state_machine/CCompositeTest.h"
 #include "dynsocc/fundamental/stdex/struct.hpp"
+#include "dynsocc/fundamental/stdex/tree.h"
 
 using namespace std;
+using namespace dynsocc;
 
 int test_machine()
 {
@@ -62,6 +64,8 @@ int main(int argc, char const *argv[])
 
 	int k = 2009;
 	printf("TTT %03d\r\n", k);
+
+	test_adjtree::test();
 
 	return 0;
 }

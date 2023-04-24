@@ -5,6 +5,8 @@
 #include <string>
 #include <queue>
 
+
+
 namespace dynsocc
 {
     struct TreeEx
@@ -147,7 +149,21 @@ namespace dynsocc
     };
 
 	#define ADJTREE_MAX_NODE 100
-	#define ADJTREE_MAX_EDGE 1000
+	#define ADJTREE_MAX_EDGE ADJTREE_MAX_NODE-1
+
+    struct TreeAdjMetaNode
+    {
+        std::string name;
+        int id;
+        int parent_id;
+        // Children??
+
+        TreeAdjMetaNode()
+        {
+            id=-1;
+            parent_id=-1;
+        }
+    };
 
     class TreeAdj
     {
@@ -164,30 +180,31 @@ namespace dynsocc
 
 		 
 		 */
-        std::string _vname[ADJTREE_MAX_NODE];
-        int _vid[ADJTREE_MAX_NODE];
+        // std::string _vname[ADJTREE_MAX_NODE];
+        TreeAdjMetaNode _vnode[ADJTREE_MAX_NODE];
 		int _auto_id;
 		int _nNode;
 
-        int _v_edge_l[1000];
-        int _v_edge_r[1000];
+        int _v_edge_l[ADJTREE_MAX_EDGE];
+        int _v_edge_r[ADJTREE_MAX_EDGE];
 		int _n_edge;
 
 		int _nRootID;	// RootNode
 
 		// Binary Tree - Mapping (AutoID - Index)
-		int _m_id2index_l[1000];
-		int _m_id2index_r[1000];
+		int _m_id2index_l[ADJTREE_MAX_NODE];
+		int _m_id2index_r[ADJTREE_MAX_NODE];
 		int _n_id2index;
 
 	public:
 		TreeAdj();
-        int add_node(int parent_id, std::string name);		// Parent-ID < 0 => Adding a root node 
-		int new_node(std::string name);						// Node only, stand alone
+        int add_node(int parent_id, std::string name, int &nodeID);		// Parent-ID < 0 => Adding a root node 
 		int get_node(int ID, std::string& data);
         int remove_node(int node_id);
-		int move_node(int node_id, int new_parent_id);
-		
+
+        int get_root_node(int &nodeid, std::string& name);
+
+        int get_children(int nodeid, std::vector<int> vchildren, std::vector<std::string> vname);
 
         //
         // v_edge_l[i]=n
@@ -196,11 +213,14 @@ namespace dynsocc
         // 
         // Tree-ID.
         //  vid[1]=i => 
-
-    private:
-        int add_relation_ship(int parent_id, int child_id);
-
     };
+
+
+	class test_adjtree
+	{
+	public:
+		static void test();
+	};
 
 	class algorithm
 	{
@@ -209,12 +229,13 @@ namespace dynsocc
 		static int binary_search(T* arr_sorted_asc, int nBegin, int nEnd, T val, int& nFound)
 		{
 			int nL = nBegin;
-			int nR = nEnd;
-			int nMid = (nL + nR) / 2;
+			int nR = nEnd-1;
+			int nMid;
 			nFound = -1;
 			T valMid;
-			while (nL < nR && nFound < 0)
+			while (nL <= nR && (nFound < 0))
 			{
+				nMid = (nL + nR) / 2;
 				valMid = arr_sorted_asc[nMid];
 
 				if (valMid == val)
@@ -239,15 +260,17 @@ namespace dynsocc
         {
             // Find every 
             int nL = nBegin;
-            int nR = nEnd;
+            int nR = nEnd-1;
             int nMid = (nL + nR) / 2;
             int nFound = -1;
             nFoundBegin = -1;
             nFoundEnd = -1;
+			T valMid;
 
             // The 1st location 
-            while (nL < nR && nFound < 0)
+            while (nL <= nR && (nFound < 0))
             {
+				nMid = (nL + nR) / 2;
                 valMid = arr_sorted_asc[nMid];
 
                 if (valMid == val)
@@ -263,7 +286,6 @@ namespace dynsocc
                     nR = nMid - 1;
                 }
             }
-
 
             if (nFound >=0)
             {
@@ -302,7 +324,7 @@ namespace dynsocc
 		}
 
         template<typename T>
-        static int insert_into_sorted_asc(T* parr, int nBegin, int nEnd, T val, int& nPos)
+        static int insert_into_sorted_desc(T* parr, int nBegin, int nEnd, T val, int& nPos)
         {
             // Pre-requisite: parr is sorted desc (p[i] >= p[i+1], every i)
             // If the pre-requisite condition is not meet => the result will incorrect, 
@@ -327,7 +349,103 @@ namespace dynsocc
             return 0;
         }
 
-                
+        template<typename T>
+        static int remove_element(T* parr, int nBegin, int &nEnd, int removeIndex)
+        {
+            if (removeIndex >= nBegin && removeIndex < nEnd)
+            {
+                for (int i=removeIndex;i<nEnd-1;++1)
+                {
+                    parr[i]=parr[i+1];
+                }
+                nEnd--;
+                return 0;
+            }
+            return 1;
+        }
+
+        template<typename T>
+        static int remove_element(T* parr, T* parr2, int nBegin, int& nEnd, int removeIndex)
+        {
+            if (removeIndex >= nBegin && removeIndex < nEnd)
+            {
+                for (int i=removeIndex;i<nEnd-1;++i)
+                {
+                    parr[i]=parr[i+1];
+                    parr2[i] = parr2[i+1];
+                }
+
+                nEnd--;
+                return 0;
+            }
+            return 1;
+        }
+        
+        template<typename T>
+        static int remove_elements(T* parr, int nBegin, int &nEnd, int* prm_indexes, int nRemoveStart, int nRemoveEnd)
+        {
+            // Validate 
+            for (int i=nRemoveStart;i<nRemoveEnd;++i)
+            {
+                if (prm_indexes[i] < nBegin || prm_indexes[i] >= nEnd)
+                {
+                    // Invalid data
+                    return 1;
+                }
+            }
+
+            int nRemove = nRemoveEnd - nRemoveStart;
+            int* premove = (int*)malloc(sizeof(int)*nRemove);
+
+            memcpy(premove, prm_indexes + nRemoveStart, nRemove*sizeof(int));
+            std::sort(premove, premove+nRemove);
+
+            // Remove from largest position first, then go on.
+            for (int i=nRemove-1;i>=0;i--)
+            {
+                for (int j=premove[i];j<nEnd;j++)
+                {
+                    parr[j] = parr[j+1];
+                }
+                nEnd--;
+            }
+
+            return 0;
+        }
+
+		template<typename T>
+		static int remove_elements(T* parr, T* parr2, int nBegin, int &nEnd, int* prm_indexes, int nRemoveStart, int nRemoveEnd)
+		{
+			// Validate 
+			for (int i = nRemoveStart; i < nRemoveEnd; ++i)
+			{
+				if (prm_indexes[i] < nBegin || prm_indexes[i] >= nEnd)
+				{
+					// Invalid data
+					return 1;
+				}
+			}
+
+			int nRemove = nRemoveEnd - nRemoveStart;
+			int* premove = (int*)malloc(sizeof(int)*nRemove);
+
+			memcpy(premove, prm_indexes + nRemoveStart, nRemove * sizeof(int));
+			std::sort(premove, premove + nRemove);
+
+			// Remove from largest position first, then go on.
+			for (int i = nRemove - 1; i >= 0; i--)
+			{
+				for (int j = premove[i]; j < nEnd; j++)
+				{
+					parr[j] = parr[j + 1];
+					parr2[j] = parr2[j + 1];
+				}
+
+				nEnd--;
+			}
+
+			return 0;
+		}
 	};
 };
 

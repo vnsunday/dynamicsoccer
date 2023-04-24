@@ -1,6 +1,8 @@
 #include "tree.h"
 #include <math.h>
 #include <algorithm>
+#include <assert.h>
+#include "struct.hpp"
 using namespace dynsocc;
 using namespace std;
 
@@ -239,12 +241,17 @@ class TreeTechnique
 
 TreeAdj::TreeAdj()
 {
-	_n_id2index = 0;
-	_m_id2index_l[0] = 0;
-	_m_id2index_r[0] = 0;
+
+	_auto_id=0;
+
+	_nRootID = -1;
+	_n_edge = 0;	//  Zero Edges
+	_nNode = 0;		// Zero Nodes
+	_n_id2index = 0;	// Zero Mapping Id-Index
+
 }
 
-int TreeAdj::add_node(int parent_id, std::string name)   // Parent-ID < 0 => Adding a root node 
+int TreeAdj::add_node(int parent_id, std::string name, int& nID)   // Parent-ID < 0 => Adding a root node 
 {
 	/*========================================================
 		Node management:
@@ -257,9 +264,6 @@ int TreeAdj::add_node(int parent_id, std::string name)   // Parent-ID < 0 => Add
 
 	// Is Parent ID valid?
 	//	Performing Binary Searcheing
-	int nL = 0;
-	int nR = _n_id2index;
-	int nMid = (nL + nR) / 2;
 	int nFound = -1;
 
 	// is adding a Root Node?
@@ -274,22 +278,7 @@ int TreeAdj::add_node(int parent_id, std::string name)   // Parent-ID < 0 => Add
 	}
 	else
 	{
-		while (nL <= nR && nFound < 0)
-		{
-			int nValMid = _m_id2index_l[nMid];
-			if (nValMid == parent_id)
-			{
-				nFound = nMid;
-			}
-			else if (parent_id < nValMid)
-			{
-				nR = nMid - 1;
-			}
-			else
-			{
-				nL = nMid + 1;
-			}
-		}
+		algorithm::binary_search(_m_id2index_l, 0, _n_id2index, parent_id, nFound);
 
 		if (nFound < 0)
 		{
@@ -301,15 +290,13 @@ int TreeAdj::add_node(int parent_id, std::string name)   // Parent-ID < 0 => Add
 
 	// Vector of a Node 
 	_auto_id++;
-	int nID = _auto_id;		// Node Address
+	nID = _auto_id;		// Node Address
 	int nIndex = _nNode;	// Node Address
 	_nNode++;
 	
-	_vname[nIndex] = name;		
-	_vid[nIndex] = _auto_id;
-
-	
-	
+	_vnode[nIndex].name = name;
+	_vnode[nIndex].id = _auto_id;
+	_vnode[nIndex].parent_id = parent_id;
 
 	// Add a mapping?
 	// 1st element sastified:
@@ -398,51 +385,24 @@ int TreeAdj::add_node(int parent_id, std::string name)   // Parent-ID < 0 => Add
 	return 0;
 }
 
-
-int TreeAdj::new_node(std::string name)						// Node only, stand alone
+int TreeAdj::get_root_node(int &nodeid, std::string& name)
 {
-	_auto_id++;
-	int nID = _auto_id;
-	int nIndex = _nNode;
-	_nNode++;
-
-	_vname[nIndex] = name;
-
-	// Register mapping (ID,Index)
-	int nInsertLoc = 0;
-
-	while (nInsertLoc < _n_id2index && ( _m_id2index_l[nInsertLoc] <nID))
+	if (_nRootID >= 0)
 	{
-		nInsertLoc++;
-	}
+		
+		int nFound = -1;
+		algorithm::binary_search(_m_id2index_l, 0, _n_id2index, _nRootID, nFound);
 
-	// Reach the end
-	if (nInsertLoc >= _n_id2index)
-	{
-		_m_id2index_l[_n_id2index] = nID;
-		_m_id2index_r[_n_id2index] = nIndex;
-		_n_id2index++;
-	}
-	else if (_m_id2index_l[nInsertLoc] == nID)	// Duplicate(??)
-	{
-		_m_id2index_r[nInsertLoc] = nIndex;		// Replacement
-	}
-	else
-	{
-		// Move everything 1 slot forward (starting from nInsertLoc+1)
-		for (int i = _n_id2index; i > nInsertLoc; i--)
+		if (nFound >= 0)
 		{
-			_m_id2index_l[i] = _m_id2index_l[i - 1];
-			_m_id2index_r[i] = _m_id2index_r[i - 1];
+			nodeid = _nRootID;
+			name = _vnode[_m_id2index_r[nFound]].name;
+			return 0;
 		}
-		_n_id2index++;
-
-		// Insert 
-		_m_id2index_l[nInsertLoc] = nID;
-		_m_id2index_r[nInsertLoc] = nIndex;
 	}
 
-	return 0;
+
+	return 1; // Could not found
 }
 
 int TreeAdj::get_node(int ID, std::string& data)
@@ -475,7 +435,7 @@ int TreeAdj::get_node(int ID, std::string& data)
 	if (nFound >= 0)
 	{
 		int nIndex = _m_id2index_r[nFound];
-		data = _vname[nIndex];
+		data = _vnode[nIndex].name;
 		return 0;
 	}
 	else
@@ -492,38 +452,42 @@ int TreeAdj::remove_node(int node_id)
 	 */
 
 	int nID = node_id;
-
+	int nParentID;
 	int nL = 0;
 	int nR = _n_id2index;
 	int nMid = 0;
 	int nFindIndex = -1;
 
-	algorithm::binary_search(_m_id2index_l, 0, _n_id2index, node_id, nFindIndex);
+
+	if (algorithm::binary_search(_m_id2index_l, 0, _n_id2index, node_id, nFindIndex) !=0 || nFindIndex<0)
+	{
+		// Invalid node
+		return 1;
+	}
+
+	nParentID = _vnode[nFindIndex].parent_id;
 
 	// Find every Edge, where is children of 
 	// Starting with n1
 	//	Ending with n1
 	int nLower, nHigher;
-	algorithm::binary_search(_v_edge_l, 0, _n_edge, node_id, nLower, nHigher);
+	int nLower2, nHigher2;
 
-	if (nLower >= 0)
-	{
-		// binary map 
-	}
-
-	// Starting from, n1, n2 && 
+	// Starting from node_id
 	// Find every children 
-	dvqueue<int> q1(100);
+	dvqueue<int> q1(100);	
 	vector<int> v1;
+	vector<int> v_node_index;
+	vector<int> v_remove_edge;
+	
 	q1.enqueue(node_id);
-
 	int nnode;
+	// Do not check a closed-path: there are no closed path in a tree.
 
 	while (!q1.empty())
 	{
 		assert(q1.dequeue(nnode)==0);
 		v1.push_back(nnode);
-
 		algorithm::binary_search(_v_edge_l, 0, _n_edge, nnode, nLower, nHigher);
 
 		if (nLower>=0)
@@ -531,14 +495,119 @@ int TreeAdj::remove_node(int node_id)
 			for (int i=nLower; i<=nHigher;++i)
 			{
 				q1.enqueue(_v_edge_r[i]);
+				v_remove_edge.push_back(i);	// Also remove edge i
 			}
+		}
+	}
+
+	if (algorithm::binary_search(_v_edge_l, 0, _n_edge, nParentID, nLower, nHigher) == 0
+			&& nLower >= 0 
+			&& algorithm::binary_search(_v_edge_r, nLower, nHigher+1, node_id, nLower2) == 0
+			&& nLower2 >= 0)
+	{
+		// Remove 
+		v_remove_edge.push_back(nLower2);
+	}
+
+	// Removing all 
+	// 	Nodes (node_id & every children)
+	// 	Edges 
+	//			(x,node_id) every x
+	//			(node_id, y) every y
+	//	Meta-data node (Mapping )
+	//		_m_id2index[]
+	for (int i=0;i<v1.size();++i)
+	{
+		if (algorithm::binary_search(_m_id2index_l, 0, _n_id2index, v1[i], nLower) == 0 && nLower>=0)
+		{
+			v_node_index.push_back(_m_id2index_r[nLower]);
+		}
+		else 
+		{
+			throw "Invalid";
+		}
+	}
+
+	algorithm::remove_elements(_v_edge_l, _v_edge_r, 0, _n_edge, v_remove_edge.data(), 0, v_remove_edge.size()); // Edge removal
+	algorithm::remove_elements(_vnode, 0, _nNode, v_node_index.data(), 0, v_node_index.size()); // 
+	
+	// Remove node mapping
+	for (int i=0;i<v1.size();++i)
+	{
+		algorithm::binary_search(_m_id2index_l, 0, _n_id2index, v1[i], nLower);
+
+		if (nLower >= 0)
+		{
+			algorithm::remove_element(
+				_m_id2index_l,
+				_m_id2index_r,
+				0,
+				_n_id2index,
+				nLower
+			);
 		}
 	}
 
 	return 0;
 }
 
-int TreeAdj::move_node(int node_id, int new_parent_id)
+int TreeAdj::get_children(int nodeid, std::vector<int> vchildren, std::vector<std::string> vname)
 {
+	int nLower, nHigher;
+	std::string name;
+	if (algorithm::binary_search(_v_edge_l, 0, _n_edge, nodeid, nLower, nHigher) == 0)
+	{
+		for (int i=nLower;i<nHigher;++i)
+		{
+			get_node(_v_edge_r[i], name);
+
+			vchildren.push_back(_v_edge_r[i]);
+			vname.push_back(name);
+		}
+	}
 	return 0;
+}
+
+void test_adjtree::test()
+{
+	TreeAdj tree;
+	int nRoot;
+	int n1, n2, n3;
+	int nSuccess = 0;
+
+	const std::string nameRoot = "Root";
+
+	tree.add_node(-1, nameRoot, nRoot);
+	tree.add_node(nRoot, "A", n1);
+	tree.add_node(nRoot, "B", n2);
+	tree.add_node(nRoot, "C", n3);
+
+	int nRoot1;
+	std::string name;
+	tree.get_root_node(nRoot1, name);
+
+	std::vector<std::string> verror;
+	std::string strError;
+
+	if (!(name == nameRoot))
+	{
+		strError = "Test Root name error. Expected Name=" + nameRoot + "; Actual Name=" + name;
+		verror.push_back(strError);
+	}
+	else
+	{
+		nSuccess++;
+	}
+
+	std::vector<int> vchild;
+	std::vector<string> vchild_name;
+
+	tree.get_children(nRoot1, vchild, vchild_name);
+
+
+	printf("Test Finished. Success Operations: %d.\r\n. \tError operations: %d\r\n", nSuccess, verror.size());
+	for (int i = 0; i < verror.size(); ++i)
+	{
+		printf("\t Error (%d): %s\r\n", (i + 1), verror[i].c_str());
+	}
 }
