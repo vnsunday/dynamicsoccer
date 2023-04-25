@@ -196,6 +196,12 @@ namespace dynsocc
 		int _m_id2index_r[ADJTREE_MAX_NODE];
 		int _n_id2index;
 
+		// Binary Tree Mapping (Name - ID)
+		std::string _m_name2id_l[ADJTREE_MAX_NODE];
+		int _m_name2id_r[ADJTREE_MAX_NODE];
+		int _n_name2id;
+
+
 	public:
 		TreeAdj();
         int add_node(int parent_id, std::string name, int &nodeID);		// Parent-ID < 0 => Adding a root node 
@@ -204,8 +210,10 @@ namespace dynsocc
 
         int get_root_node(int &nodeid, std::string& name);
 
-        int get_children(int nodeid, std::vector<int> vchildren, std::vector<std::string> vname);
+        int get_children(int nodeid, std::vector<int>& vchildren, std::vector<std::string>& vname);
 
+		int count_node();
+		int count_edge();
         //
         // v_edge_l[i]=n
         // v_edge_r[i]=m
@@ -220,6 +228,7 @@ namespace dynsocc
 	{
 	public:
 		static void test();
+		
 	};
 
 	class algorithm

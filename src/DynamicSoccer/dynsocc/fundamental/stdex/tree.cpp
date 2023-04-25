@@ -248,6 +248,7 @@ TreeAdj::TreeAdj()
 	_n_edge = 0;	//  Zero Edges
 	_nNode = 0;		// Zero Nodes
 	_n_id2index = 0;	// Zero Mapping Id-Index
+	_n_name2id = 0;		// Zero Mapping Name-ID
 
 }
 
@@ -409,13 +410,14 @@ int TreeAdj::get_node(int ID, std::string& data)
 {
 	// Binary Search
 	int nL = 0;
-	int nR = _n_id2index;
+	int nR = _n_id2index-1;
 	int nMid = (nL + nR) / 2;
 	int nVal; // 
 	int nFound = -1;
 
-	while (nL < nR && nFound < 0)
+	while (nL <= nR && nFound < 0)
 	{
+		nMid = (nL + nR) / 2;
 		nVal = _m_id2index_l[nMid];
 
 		if (nVal == ID)
@@ -424,11 +426,11 @@ int TreeAdj::get_node(int ID, std::string& data)
 		}
 		else if (nVal < ID)
 		{
-			nR = nMid - 1;
+			nL = nMid + 1;
 		}
 		else
 		{
-			nL = nMid + 1;
+			nR = nMid - 1;
 		}
 	}
 
@@ -551,36 +553,64 @@ int TreeAdj::remove_node(int node_id)
 	return 0;
 }
 
-int TreeAdj::get_children(int nodeid, std::vector<int> vchildren, std::vector<std::string> vname)
+int TreeAdj::get_children(int nodeid, std::vector<int>& vchildren, std::vector<std::string>& vname)
 {
 	int nLower, nHigher;
 	std::string name;
 	if (algorithm::binary_search(_v_edge_l, 0, _n_edge, nodeid, nLower, nHigher) == 0)
 	{
-		for (int i=nLower;i<nHigher;++i)
+		vchildren.clear();
+		vname.clear();
+		for (int i=nLower;i<=nHigher;++i)
 		{
 			get_node(_v_edge_r[i], name);
 
 			vchildren.push_back(_v_edge_r[i]);
 			vname.push_back(name);
 		}
+
+		return 0;
 	}
-	return 0;
+	return 1;
 }
+
+int TreeAdj::count_node()
+{
+	return _nNode;
+}
+
+int TreeAdj::count_edge()
+{
+	return _n_edge;
+}
+
+#define TEST_CHECK(condition, errormsg, verror, successcount, totalcount) if (condition) { successcount++; } else { verror.push_back(errormsg); } totalcount++;
+#define CONCAT_STR(strval, str1, str2, str3) strval=str1 + str2 + str3
 
 void test_adjtree::test()
 {
 	TreeAdj tree;
 	int nRoot;
-	int n1, n2, n3;
+	int nChildID;
+	int nChildID_L2;
 	int nSuccess = 0;
-
+	int nTotal = 0;
 	const std::string nameRoot = "Root";
+	vector<string> vname_in = { "A", "B", "C"};
+	vector<string> vname_in_l2 = { "C1", "C2", "C3", "C4" };
+	vector<string> vname_in_l3_1 = { "C11", "C12", "C13" };
+	vector<string> vname_in_l3_2 = { "C21", "C22" };
+
+
+	std::sort(vname_in.begin(), vname_in.end());
+	std::sort(vname_in_l2.begin(), vname_in_l2.end());
 
 	tree.add_node(-1, nameRoot, nRoot);
-	tree.add_node(nRoot, "A", n1);
-	tree.add_node(nRoot, "B", n2);
-	tree.add_node(nRoot, "C", n3);
+
+	for (int i=0;i<vname_in.size();++i)
+	{
+		tree.add_node(nRoot, vname_in[i], nChildID);
+	}
 
 	int nRoot1;
 	std::string name;
@@ -589,6 +619,11 @@ void test_adjtree::test()
 	std::vector<std::string> verror;
 	std::string strError;
 
+	std::string str_Err_Root;
+	CONCAT_STR(str_Err_Root, "Test Root name error. Expected Name=", nameRoot, "; Actual Name=");
+	TEST_CHECK(name == nameRoot, str_Err_Root, verror, nSuccess,nTotal);
+
+	/*
 	if (!(name == nameRoot))
 	{
 		strError = "Test Root name error. Expected Name=" + nameRoot + "; Actual Name=" + name;
@@ -598,14 +633,58 @@ void test_adjtree::test()
 	{
 		nSuccess++;
 	}
+	*/
 
 	std::vector<int> vchild;
 	std::vector<string> vchild_name;
+	std::vector<int> vint;
+	std::vector<string> vstr;
 
 	tree.get_children(nRoot1, vchild, vchild_name);
+	std::sort(vchild_name.begin(), vchild_name.end());
+
+	char szBuff[1000];
+	sprintf(szBuff, "Number of children. Expected=%d, Actual=%d", 3, vchild.size());
+	TEST_CHECK(vchild.size()==3, szBuff, verror, nSuccess,nTotal);
 
 
-	printf("Test Finished. Success Operations: %d.\r\n. \tError operations: %d\r\n", nSuccess, verror.size());
+	sprintf(szBuff, "Children name are not OK");
+	TEST_CHECK(vname_in == vchild_name, szBuff, verror, nSuccess,nTotal);
+
+	// 
+	for (int i = 0; i < vname_in_l2.size(); ++i)
+	{
+		tree.add_node(nChildID, vname_in_l2[i], nChildID_L2);
+	}
+
+	vint.clear();
+	vstr.clear();
+	tree.get_children(nChildID, vint, vstr);
+
+	std::sort(vstr.begin(), vstr.end());
+
+	sprintf(szBuff, "Number of children (L2) not OK. Expected=%d, Actual=%d", vname_in_l2.size(), vint.size());
+	TEST_CHECK(vint.size() == vname_in_l2.size(), szBuff, verror, nSuccess, nTotal);
+	TEST_CHECK(vstr == vname_in_l2, "Name of children (L2) are not OK", verror, nSuccess, nTotal);
+
+	tree.remove_node(nChildID);
+
+	tree.get_children(nRoot1, vchild, vchild_name);
+	std::sort(vchild_name.begin(), vchild_name.end());
+	sprintf(szBuff, "Number of children after removing a node - is not ok. Expected=%d, Actual=%d", vname_in.size() - 1, vchild.size());
+	TEST_CHECK(vchild.size() == vname_in.size()-1, szBuff, verror, nSuccess, nTotal);
+
+
+	int countNode = tree.count_node();
+	int countEdge = tree.count_edge();
+
+	sprintf(szBuff, "Reletionship Node/Edge is not OK. Expected num_node=num_edge+1. Actual, num_node=%d, num_edge=%d", countNode, countEdge);
+	TEST_CHECK(countNode == countEdge + 1, szBuff, verror, nSuccess, nTotal);
+
+	sprintf(szBuff, "Expected Node number after removal - Expected=%d, Actual=%d", (1+vname_in.size()-1), countNode);
+	TEST_CHECK((1 + vname_in.size() - 1) == countNode, szBuff, verror, nSuccess, nTotal);
+
+	printf("Test Finished. Success Operations: %02d/%02d.\r\n. \tError operations: %02d\r\n", nSuccess, nTotal, verror.size());
 	for (int i = 0; i < verror.size(); ++i)
 	{
 		printf("\t Error (%d): %s\r\n", (i + 1), verror[i].c_str());
