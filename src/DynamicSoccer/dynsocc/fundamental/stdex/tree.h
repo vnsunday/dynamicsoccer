@@ -214,6 +214,12 @@ namespace dynsocc
 
 		int count_node();
 		int count_edge();
+
+        int get_descentdants(int node_id, std::vector<int>& vid, std::vector<std::string>& vname);
+        int get_descentdants(std::vector<int> vnodeid, std::vector<int>& vid, std::vector<std::string>& vname);
+        int branch_population(int node_id);
+        int branches_population(std::vector<int> node_id);
+
         //
         // v_edge_l[i]=n
         // v_edge_r[i]=m

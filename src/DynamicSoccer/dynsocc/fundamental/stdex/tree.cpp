@@ -477,7 +477,7 @@ int TreeAdj::remove_node(int node_id)
 
 	// Starting from node_id
 	// Find every children 
-	dvqueue<int> q1(100);	
+	dvqueue<int> q1(ADJTREE_MAX_NODE);	
 	vector<int> v1;
 	vector<int> v_node_index;
 	vector<int> v_remove_edge;
@@ -574,6 +574,83 @@ int TreeAdj::get_children(int nodeid, std::vector<int>& vchildren, std::vector<s
 	return 1;
 }
 
+int TreeAdj::get_descentdants(int node_id, std::vector<int>& vid, std::vector<std::string>& vname)
+{
+	int nid;
+	dvqueue<int> d1(ADJTREE_MAX_NODE);
+	d1.enqueue(node_id);
+
+	vid.clear();
+	vname.clear();
+
+	int nLow, nHigh;
+	int nFound;
+
+	int arr_visited[ADJTREE_MAX_NODE];	// Visit flag
+	int nVisited=0;
+
+	while (!d1.empty())
+	{
+		d1.dequeue(nid);
+		algorithm::binary_search(_v_edge_l, 0, _n_edge, nid, nLow, nHigh);
+
+		for (int i = nLow; i <= nHigh; ++i)
+		{
+			int nID = _v_edge_r[i];
+
+			algorithm::binary_search(_m_id2index_l, 0, _n_id2index, nID, nFound);
+
+			vid.push_back(nID);
+			vname.push_back(_vnode[nFound].name);
+
+			d1.enqueue(nID);	// Loop 
+		}	
+	}
+
+	return 0;
+
+}
+int TreeAdj::get_descentdants(std::vector<int> vnodeid, std::vector<int>& vid, std::vector<std::string>& vname)
+{
+	throw "UnFinished";
+
+	int arr_visit[ADJTREE_MAX_NODE];
+	int nvisit = 0;
+	int nFound, nFound1;
+	int nL, nH;
+	dvqueue<int> dq(ADJTREE_MAX_NODE);
+
+	for (int i = 0; i < vnodeid.size(); ++i)
+	{
+		if (algorithm::binary_search(_m_id2index_l, 0, _n_id2index, vnodeid[i], nFound) == 0 
+			&& nFound >= 0
+			&& algorithm::binary_search(arr_visit, 0, nvisit, vnodeid[i], nFound1) == 0		// Not visited yet
+			&& nFound1 < 0)
+		{
+			dq.enqueue(vnodeid[i]);
+		}
+	}
+
+	// TODO
+	while (!dq.empty())
+	{
+
+	}
+	return 0;
+}
+
+int TreeAdj::branch_population(int node_id)
+{
+	
+	
+	return 0;
+}
+
+int TreeAdj::branches_population(std::vector<int> node_id)
+{
+	return 0;
+}
+
 int TreeAdj::count_node()
 {
 	return _nNode;
@@ -584,11 +661,13 @@ int TreeAdj::count_edge()
 	return _n_edge;
 }
 
-#define TEST_CHECK(condition, errormsg, verror, successcount, totalcount) if (condition) { successcount++; } else { verror.push_back(errormsg); } totalcount++;
+#define DISPLAY_ONE_PROCESS printf(".")
+#define TEST_CHECK(condition, errormsg, verror, successcount, totalcount) if (condition) { successcount++; } else { verror.push_back(errormsg); } DISPLAY_ONE_PROCESS;totalcount++;
 #define CONCAT_STR(strval, str1, str2, str3) strval=str1 + str2 + str3
 
 void test_adjtree::test()
 {
+	printf("Starting Test\r\n");
 	TreeAdj tree;
 	int nRoot;
 	int nChildID;
@@ -600,6 +679,9 @@ void test_adjtree::test()
 	vector<string> vname_in_l2 = { "C1", "C2", "C3", "C4" };
 	vector<string> vname_in_l3_1 = { "C11", "C12", "C13" };
 	vector<string> vname_in_l3_2 = { "C21", "C22" };
+	vector<int> vid_l2;
+	vector<int> vid_l3_1;
+	vector<int> vid_l3_2;
 
 
 	std::sort(vname_in.begin(), vname_in.end());
@@ -655,6 +737,21 @@ void test_adjtree::test()
 	for (int i = 0; i < vname_in_l2.size(); ++i)
 	{
 		tree.add_node(nChildID, vname_in_l2[i], nChildID_L2);
+		vid_l2.push_back(nChildID_L2);
+	}
+
+	for (int i=0;i<vname_in_l3_1.size();++i)
+	{
+		int nRetID;
+		tree.add_node(vid_l2[0], vname_in_l3_1[i], nRetID);
+		vid_l3_1.push_back(nRetID);
+	}
+
+	for (int i=0;i<vname_in_l3_2.size();++i)
+	{
+		int nRetID;
+		tree.add_node(vid_l2[1], vname_in_l3_2[i], nRetID);
+		vid_l3_2.push_back(nRetID);
 	}
 
 	vint.clear();
@@ -666,6 +763,7 @@ void test_adjtree::test()
 	sprintf(szBuff, "Number of children (L2) not OK. Expected=%d, Actual=%d", vname_in_l2.size(), vint.size());
 	TEST_CHECK(vint.size() == vname_in_l2.size(), szBuff, verror, nSuccess, nTotal);
 	TEST_CHECK(vstr == vname_in_l2, "Name of children (L2) are not OK", verror, nSuccess, nTotal);
+
 
 	tree.remove_node(nChildID);
 
@@ -684,7 +782,7 @@ void test_adjtree::test()
 	sprintf(szBuff, "Expected Node number after removal - Expected=%d, Actual=%d", (1+vname_in.size()-1), countNode);
 	TEST_CHECK((1 + vname_in.size() - 1) == countNode, szBuff, verror, nSuccess, nTotal);
 
-	printf("Test Finished. Success Operations: %02d/%02d.\r\n. \tError operations: %02d\r\n", nSuccess, nTotal, verror.size());
+	printf("\r\nTest Finished. Success Operations: %02d/%02d.\r\n. \tError operations: %02d\r\n", nSuccess, nTotal, verror.size());
 	for (int i = 0; i < verror.size(); ++i)
 	{
 		printf("\t Error (%d): %s\r\n", (i + 1), verror[i].c_str());
