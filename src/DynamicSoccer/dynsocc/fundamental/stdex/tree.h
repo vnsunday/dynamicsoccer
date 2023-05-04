@@ -209,14 +209,12 @@ namespace dynsocc
         int remove_node(int node_id);
 
         int get_root_node(int &nodeid, std::string& name);
-
         int get_children(int nodeid, std::vector<int>& vchildren, std::vector<std::string>& vname);
 
 		int count_node();
 		int count_edge();
 
         int get_descentdants(int node_id, std::vector<int>& vid, std::vector<std::string>& vname);
-        int get_descentdants(std::vector<int> vnodeid, std::vector<int>& vid, std::vector<std::string>& vname);
         int branch_population(int node_id);
         int branches_population(std::vector<int> node_id);
 
@@ -279,7 +277,7 @@ namespace dynsocc
             int nMid = (nL + nR) / 2;
             int nFound = -1;
             nFoundBegin = -1;
-            nFoundEnd = -1;
+            nFoundEnd = nFoundBegin -1;
 			T valMid;
 
             // The 1st location 
@@ -317,7 +315,7 @@ namespace dynsocc
 
         
 		template<typename T>
-		static int insert_into_sorted_asc(T* parr, int nBegin, int nEnd, T val, int& nPos)
+		static int insert_into_sorted_asc(T* parr, int nBegin, int &nEnd, T val, int& nPos)
 		{
             // Pre-Requisite: parr is sorted asc (every i: p[i] <= p[i+1])
             // This function does not validate pre-requisite condition 
@@ -335,11 +333,12 @@ namespace dynsocc
 
             // Insert at nPos
             parr[nPos] = val;
+			nEnd++;
             return 0;
 		}
 
         template<typename T>
-        static int insert_into_sorted_desc(T* parr, int nBegin, int nEnd, T val, int& nPos)
+        static int insert_into_sorted_desc(T* parr, int nBegin, int &nEnd, T val, int& nPos)
         {
             // Pre-requisite: parr is sorted desc (p[i] >= p[i+1], every i)
             // If the pre-requisite condition is not meet => the result will incorrect, 
@@ -361,6 +360,7 @@ namespace dynsocc
 
             // Insert 
             parr[nPos] = val;
+			nEnd++;
             return 0;
         }
 

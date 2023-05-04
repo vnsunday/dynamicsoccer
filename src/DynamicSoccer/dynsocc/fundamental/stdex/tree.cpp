@@ -610,44 +610,89 @@ int TreeAdj::get_descentdants(int node_id, std::vector<int>& vid, std::vector<st
 	return 0;
 
 }
-int TreeAdj::get_descentdants(std::vector<int> vnodeid, std::vector<int>& vid, std::vector<std::string>& vname)
-{
-	throw "UnFinished";
 
-	int arr_visit[ADJTREE_MAX_NODE];
-	int nvisit = 0;
-	int nFound, nFound1;
-	int nL, nH;
+int TreeAdj::branch_population(int node_id)		// parent included node 
+{
+	int nCount = 0;
+	int nVisitID;
+	int nIndex;
+	int nLoIndex;
+	int nHiIndex;
 	dvqueue<int> dq(ADJTREE_MAX_NODE);
 
-	for (int i = 0; i < vnodeid.size(); ++i)
+	algorithm::binary_search(_m_id2index_l, 0, _n_id2index, node_id, nIndex);
+	if (nIndex < 0)
 	{
-		if (algorithm::binary_search(_m_id2index_l, 0, _n_id2index, vnodeid[i], nFound) == 0 
-			&& nFound >= 0
-			&& algorithm::binary_search(arr_visit, 0, nvisit, vnodeid[i], nFound1) == 0		// Not visited yet
-			&& nFound1 < 0)
+		// Invalid
+		return 0;
+	}
+
+	dq.enqueue(node_id);
+	while (!dq.empty())
+	{
+		dq.dequeue(nVisitID);
+		nCount++;	// Visit
+
+		if (algorithm::binary_search(_v_edge_l, 0, _n_edge, nVisitID, nLoIndex, nHiIndex) == 0)
 		{
-			dq.enqueue(vnodeid[i]);
+			for (int i = nLoIndex; i <= nHiIndex; ++i)
+			{
+				dq.enqueue(_v_edge_r[i]);
+			}
+		}
+	}
+	
+	return nCount;
+}
+
+int TreeAdj::branches_population(std::vector<int> vid)
+{
+	int arr_visit[ADJTREE_MAX_NODE];
+	int nvisit;
+	int nIndex, nIndex1;
+	int nLoIndex, nHiIndex;
+	int nVisitID;
+	dvqueue<int> dq(ADJTREE_MAX_NODE);
+	int nCount = 0;
+
+	// Push every valid node into 
+	for (int i = 0; i < vid.size(); ++i)
+	{
+		if (algorithm::binary_search(_m_id2index_l, 0, _n_id2index, vid[i], nIndex) == 0
+			&& nIndex >= 0
+			&& algorithm::binary_search(arr_visit, 0, nvisit, vid[i], nIndex1) == 0	// Not visited yet
+			&& nIndex1 < 0)
+		{
+			dq.enqueue(vid[i]);
+			algorithm::insert_into_sorted_asc(arr_visit, 0, nvisit, vid[i], nIndex1);
+		}
+		else
+		{
+			// throw "invalid id";
 		}
 	}
 
-	// TODO
 	while (!dq.empty())
 	{
+		dq.dequeue(nVisitID);
+
+		// dq.dequeue(nVisitID)
+		nCount++;
+
+		if (algorithm::binary_search(_v_edge_l, 0, _n_edge, nVisitID, nLoIndex, nHiIndex) == 0)
+		{
+			for (int i = nLoIndex; i <= nHiIndex; ++i)
+			{
+				// Has not visited
+				if (algorithm::binary_search(arr_visit, 0, nvisit, _v_edge_r[i], nIndex) == 0 && nIndex < 0)
+				{
+					dq.enqueue(_v_edge_r[i]);
+					algorithm::insert_into_sorted_asc(arr_visit, 0, nvisit, _v_edge_r[i], nIndex);
+				}
+			}
+		}
 
 	}
-	return 0;
-}
-
-int TreeAdj::branch_population(int node_id)
-{
-	
-	
-	return 0;
-}
-
-int TreeAdj::branches_population(std::vector<int> node_id)
-{
 	return 0;
 }
 
@@ -766,6 +811,13 @@ void test_adjtree::test()
 
 
 	tree.remove_node(nChildID);
+
+	int nInt1, nInt2;
+
+	nInt1 = tree.branch_population(nRoot);
+	nInt2 = tree.count_node();
+	sprintf(szBuff, "Test Node Count and Branch Popuplation is not OK, expected: they are equal. RootBranch Population=%d, TotalNode=%d", nInt1, nInt2);
+	TEST_CHECK(nInt1 == nInt2, szBuff, verror, nSuccess, nTotal);
 
 	tree.get_children(nRoot1, vchild, vchild_name);
 	std::sort(vchild_name.begin(), vchild_name.end());
