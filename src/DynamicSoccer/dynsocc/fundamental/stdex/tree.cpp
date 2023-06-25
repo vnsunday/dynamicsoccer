@@ -202,7 +202,7 @@ class TreeTechnique
                 int new_child = 11;     //Any ID;
 
                 stack[nstack++] = new_parent;
-                while (nstack > 0)  
+                while (nstack > 0)
                 {
                     int element = stack[--nstack];
                     arr[narr++] = element;
@@ -232,7 +232,7 @@ class TreeTechnique
 			 *	Function-001: AddNewNode (IfValie)
 			 *********************************************************************************/
             {
-                
+				
             }
 
 			return 0;

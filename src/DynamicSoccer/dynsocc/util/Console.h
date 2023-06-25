@@ -34,6 +34,11 @@ public:
 
 		std::cout << std::endl;
 	}
+
+	static void format_number_with_quotes(char szbuff)
+	{
+		return;
+	}
 };
 
 
