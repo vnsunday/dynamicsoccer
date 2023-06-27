@@ -11,6 +11,7 @@
 #include "dynsocc/test/state_machine/CCompositeTest.h"
 #include "dynsocc/fundamental/stdex/struct.hpp"
 #include "dynsocc/fundamental/stdex/tree.h"
+#include "dynsocc/fundamental/stdex/textview.h"
 
 using namespace std;
 using namespace dynsocc;
@@ -67,7 +68,16 @@ int main(int argc, char const *argv[])
 
 	test_adjtree::test();
 
+	vector<int> vcolsize({ 14, 20, 18});
+	vector<int> vformat({ DYNSOCC_TEXT_ALIGN_CENTER, DYNSOCC_TEXT_ALIGN_RIGHT, DYNSOCC_TEXT_ALIGN_LEFT});
+	vector<string> vcontent({ "Content", "12'880", "Is In At" });
 
-
+	std::cout << TextView::column_print(vcolsize, vformat, vcontent, '|') << endl;
+	std::cout << TextView::table_print(vcolsize, vformat,
+		vector<vector<string>>({
+			{ "a", "b", "c"},
+			{ "a", "b", "c" },
+			{ "a", "b", "c" } }), '|') << endl;
+	
 	return 0;
 }

@@ -95,7 +95,6 @@ string stringutil::format_number_thousand_separator(double number, int& res, cha
     double dIntPart = floor(number);
 
     int nlen = strlen(szBuff);
-
     int ndotIdx = 0;
     int nfirstNumIdx = 0;
 
