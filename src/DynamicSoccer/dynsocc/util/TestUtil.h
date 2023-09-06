@@ -13,7 +13,8 @@ public:
 	TestUtil();
 	virtual ~TestUtil();
 
-	static int assert(bool b, const char* szMsg); //
+	static int assert(bool b, const char* szMsg);
+	
 };
 
 #endif /* APP_UTIL_TESTUTIL_H_ */

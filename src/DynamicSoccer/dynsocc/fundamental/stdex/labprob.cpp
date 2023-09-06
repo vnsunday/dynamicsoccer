@@ -18,6 +18,20 @@ typedef Set int;
 #define Typeof(a) 1
 #define Motivation(a) 1
 
+struct ASet 
+{
+public: 
+    int* every_values;
+    int nval;
+
+    int nVal;        
+};
+
+#define Identical(o, a, b)  1
+#define Equal(a,b) 1 
+#define FindAFormula(a) 1
+#define FindExactValue(a) 1
+
 int Ex3_1() 
 {
     // Definition of Mapping 
@@ -105,8 +119,110 @@ int Ex3_1()
     double p = p1.Probability(count6, evenSum);
 
     a.independent(b);
-
     Completed(Equal(a,b));
     // Number Only 
+    RandomVariable rd1;
+    RandomVariable rd2;
+    // 
 
+    // Teach machine to estimate probability:
+    //      + Able to define Event (Dice)
+    //      + Able to define combined Event
+    //      + Able to define SampleSpace
+    #define CombineModel(m1,m2) 1
+    #define Model(sample_space, p_function) 1
+    #define DefineRandomVariable(model) 1
+    typedef int SampleSpace;
+    typedef int Model;
+    SampleSpace s1;
+    SampleSpace s2;
+
+    Model dice1;
+    Model dice2;
+
+    #define Set 1
+    #define EverythingIsSet 1 
+
+    #define Number(a)  1 
+    #define Range(a,b) 1
+    #define Shape(a) 1
+    #define RangeShape(a) 1
+    #define ValueDescription 1
+
+    ValueDescription(2)
+    ValueDescription(3)
+
+    Range(a,b)
+    Range(a,b)
+
+    if (Range(a,b))
+    {
+        Range(a,b)
+    }
+
+    // Area? 
+
+    // Finding Probability using Model 
+    // Probability = 
+    P(EventA)=Weight(A)/Weight(Whole);  
+    Anything EventA = subset(Whole); // SubSet(Whole)
+    Anything EventB subset(Whole); // Subset (Whole)
+
+    subset(Whole); // Subset(Whole)
+
+
+    // Problem: calculate Probability 
+    //      * Output1: Exactly number
+    //      * Output2: Formula
+    // Describle
+
+    // Value & Types 
+    // Value & Types 
+
+    // Discrete (Number)
+    // Area 
+    // Finding Truth? 
+    EventA: { Shape }
+    InfinitiveShape? 
+    FiniteShape? 
+    Infinitive / Infinitive = ? 
+
+    typedef int Anything; 
+    Anything _a;
+    Area(_a) / Weight(_a); 
+
+    typedef int Anything;
+    Area(_a) / Weight(_a);
+
+    Variables v1, v2, v3;
+    Event a; 
+    Event a(a condition);
+
+    IsValueOf(S);
+    EveryValue(S);
+    ForAny;
+   Variables v1, v2, v3;
+
+   #define NOTHING 0
+
+
+   // Dice Definition
+   SampleSpace = {1,2,3,4,5,6};
+    // Listing every value 
+    // Formula description 
+    // Routine description 
+   P_function[i]=1/6; // Every i? 
+   P_function.MapFrom = SampleSpace;
+   P_Function.MapTo = Real;
+   P_Function.Formula = 1/6; // Every i?
+
+   AI.Run(P_Function(6));
+   P_Function(6);
+   AI.Run(P_Function(7));
+}
+
+int Equals()
+{
+    Known();
+    FindExactValue(a);
 }

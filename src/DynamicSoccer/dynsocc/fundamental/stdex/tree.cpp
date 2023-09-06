@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <assert.h>
 #include "struct.hpp"
+#include "algorithm.hpp"
 using namespace dynsocc;
 using namespace std;
 
@@ -393,7 +394,7 @@ int TreeAdj::get_root_node(int &nodeid, std::string& name)
 		
 		int nFound = -1;
 		algorithm::binary_search(_m_id2index_l, 0, _n_id2index, _nRootID, nFound);
-
+	
 		if (nFound >= 0)
 		{
 			nodeid = _nRootID;
