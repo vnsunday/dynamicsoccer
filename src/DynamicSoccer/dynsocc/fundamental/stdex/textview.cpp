@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <assert.h>
+#include <string.h>
 using namespace dynsocc;
 using namespace std;
 

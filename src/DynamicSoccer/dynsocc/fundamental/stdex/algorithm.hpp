@@ -1,6 +1,7 @@
 #ifndef DYNSOCC_FUNDAMENTAL_STDEX_ALGORITHM_HPP_
 #define DYNSOCC_FUNDAMENTAL_STDEX_ALGORITHM_HPP_
 #include <assert.h>
+#include <string.h>
 
 namespace dynsocc
 {
@@ -138,7 +139,7 @@ namespace dynsocc
         {
             if (removeIndex >= nBegin && removeIndex < nEnd)
             {
-                for (int i=removeIndex;i<nEnd-1;++1)
+                for (int i=removeIndex;i<nEnd-1;++i)
                 {
                     parr[i]=parr[i+1];
                 }

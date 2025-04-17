@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-
+/*
 struct Event 
 {
     int parameter;
@@ -226,3 +226,4 @@ int Equals()
     Known();
     FindExactValue(a);
 }
+*/

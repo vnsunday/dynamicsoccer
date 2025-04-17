@@ -1,5 +1,7 @@
 #include "string.hpp"
 #include <vector>
+#include <math.h>
+#include <string.h>
 
 using namespace dynsocc;
 using namespace std;
