@@ -1,4 +1,6 @@
 #include "string.hpp"
+#include <cmath>
+#include <cstring>
 #include <vector>
 
 using namespace dynsocc;

@@ -2,6 +2,7 @@
 #define DYNSOCC_FUNDAMENTAL_STDEX_ALGORITHM_HPP_
 #include <assert.h>
 #include <string.h>
+#include <algorithm>
 #include "stdex.h"
 
 namespace dynsocc
@@ -166,6 +167,7 @@ namespace dynsocc
         template<typename T>
         static int remove_elements(T* parr, T* parr2, int nBegin, int& nEnd, int startIndex, int endIndex)
         {
+            /*
             if (removeIndex >= nBegin && removeIndex < nEnd)
             {
                 for (int i=removeIndex;i<nEnd-1;++i)
@@ -177,6 +179,7 @@ namespace dynsocc
                 nEnd--;
                 return 0;
             }
+            */
             return 1;
         }
         
