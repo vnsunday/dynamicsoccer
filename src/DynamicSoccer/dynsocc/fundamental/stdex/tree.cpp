@@ -269,23 +269,19 @@ int TreeAdj::add_node(int parent_id, std::string name, int& nID)   // Parent-ID 
 	int nFound = -1;
 
 	// is adding a Root Node?
-	if (parent_id < 0)
-	{
+	if (parent_id < 0) {
 		// Another Root Node is existed?
-		if (_nRootID >= 0)
-		{
+		if (_nRootID >= 0) {
 			// ??
 			throw "Root Node is existed";
 		}
 	}
-	else
-	{
+	else {
 		algorithm::binary_search(_m_id2index_l, 0, _n_id2index, parent_id, nFound);
 
-		if (nFound < 0)
-		{
+		if (nFound < 0) {
 			// 
-			throw "ParentID Invalid";
+			throw "ParentID-Invalid";
 		}
 	}
 	
@@ -306,8 +302,7 @@ int TreeAdj::add_node(int parent_id, std::string name, int& nID)   // Parent-ID 
 	// Validation?
 	//		
 	int nInsertLoc = 0;
-	while (nInsertLoc < _n_id2index && _m_id2index_l[nInsertLoc] < nID)
-	{
+	while (nInsertLoc < _n_id2index && _m_id2index_l[nInsertLoc] < nID) {
 		nInsertLoc++;	
 	}
 
@@ -321,13 +316,11 @@ int TreeAdj::add_node(int parent_id, std::string name, int& nID)   // Parent-ID 
 	{
 		_m_id2index_r[_n_id2index] = nIndex;	// Replace
 	}
-	else
-	{
+	else {
 		// Insert into right position 
 
 		//1) Move everything 1-position forward
-		for (int i = _n_id2index; i > nInsertLoc; i--)
-		{
+		for (int i = _n_id2index; i > nInsertLoc; i--) {
 			_m_id2index_l[i] = _m_id2index_l[i - 1];
 			_m_id2index_r[i] = _m_id2index_r[i - 1];
 		}
@@ -339,11 +332,9 @@ int TreeAdj::add_node(int parent_id, std::string name, int& nID)   // Parent-ID 
 	}
 
 	// New Root Node
-	if (parent_id < 0)
-	{
+	if (parent_id < 0) {
 		_nRootID = nID;
 		return 0;
-
 	}
 
 	// Register Relationship Graph 
@@ -357,23 +348,19 @@ int TreeAdj::add_node(int parent_id, std::string name, int& nID)   // Parent-ID 
 	while (nInsertLoc < _n_edge &&
 		(_v_edge_l[nInsertLoc] < parent_id
 			||
-			(_v_edge_l[nInsertLoc] == parent_id && _v_edge_r[nInsertLoc] < nID)))
-	{
+			(_v_edge_l[nInsertLoc] == parent_id && _v_edge_r[nInsertLoc] < nID))) {
 		nInsertLoc++;
 	}
 
-	if (nInsertLoc >= _n_edge)
-	{
+	if (nInsertLoc >= _n_edge) {
 		// Append at the last position
 		_v_edge_l[_n_edge] = parent_id;
 		_v_edge_r[_n_edge] = nID;
 		_n_edge++;
 	}
-	else
-	{
+	else {
 		// Move everything one-position forward 
-		for (int i = _n_edge; i > nInsertLoc; i--)
-		{
+		for (int i = _n_edge; i > nInsertLoc; i--) {
 			_v_edge_l[i] = _v_edge_l[i - 1];
 			_v_edge_r[i] = _v_edge_r[i - 1];
 		}
@@ -383,9 +370,21 @@ int TreeAdj::add_node(int parent_id, std::string name, int& nID)   // Parent-ID 
 		_v_edge_l[nInsertLoc] = parent_id;
 		_v_edge_r[nInsertLoc] = nID;
 	}
+
+	// Update the Binary Tree Name Mapping 
+	int nIdxName;
+	int nIdxNameR;
+	int _n_name2id_r = _n_name2id;
+	algorithm::insert_into_sorted_asc(_m_name2id_l, 0, _n_name2id, name, nIdxName);
+	algorithm::insert(_m_name2id_r, 0, _n_name2id_r, nID, nIdxNameR);
 	
 	return 0;
 }
+
+int add_node(std::string parent_node_name, std::string name, int &nodeID) {
+	return 0;
+}
+
 
 int TreeAdj::get_root_node(int &nodeid, std::string& name)
 {
@@ -402,8 +401,6 @@ int TreeAdj::get_root_node(int &nodeid, std::string& name)
 			return 0;
 		}
 	}
-
-
 	return 1; // Could not found
 }
 
@@ -416,13 +413,11 @@ int TreeAdj::get_node(int ID, std::string& data)
 	int nVal; // 
 	int nFound = -1;
 
-	while (nL <= nR && nFound < 0)
-	{
+	while (nL <= nR && nFound < 0) {
 		nMid = (nL + nR) / 2;
 		nVal = _m_id2index_l[nMid];
 
-		if (nVal == ID)
-		{
+		if (nVal == ID) {
 			nFound = nMid;
 		}
 		else if (nVal < ID)
@@ -451,7 +446,9 @@ int TreeAdj::remove_node(int node_id)
 {
 	/*
 		1. Remove node_id
+		1.1. Remove Name Mapping of node_id
 		2. Remove every descendants 
+		2.1. Remove desendants Name Mapping
 	 */
 
 	int nID = node_id;
@@ -478,10 +475,10 @@ int TreeAdj::remove_node(int node_id)
 
 	// Starting from node_id
 	// Find every children 
-	dvqueue<int> q1(ADJTREE_MAX_NODE);	
-	vector<int> v1;
-	vector<int> v_node_index;
-	vector<int> v_remove_edge;
+	dvqueue<int> q1(ADJTREE_MAX_NODE);	 // Queue structure for findin
+	vector<int> v1;  // List of NodeID to be removed
+	vector<int> v_node_index; // List of Index-Of-NodeID
+	vector<int> v_remove_edge; // list of Edges to be removed
 	
 	q1.enqueue(node_id);
 	int nnode;
@@ -534,9 +531,11 @@ int TreeAdj::remove_node(int node_id)
 	algorithm::remove_elements(_v_edge_l, _v_edge_r, 0, _n_edge, v_remove_edge.data(), 0, v_remove_edge.size()); // Edge removal
 	algorithm::remove_elements(_vnode, 0, _nNode, v_node_index.data(), 0, v_node_index.size()); // 
 	
-	// Remove node mapping
-	for (int i=0;i<v1.size();++i)
-	{
+	// Remove Id-2-Index mapping
+	// And Remove Name-2-Id Mapping
+	for (int i=0;i<v1.size();++i) {
+
+		// Node Mapping: ID-2-Index mappin
 		algorithm::binary_search(_m_id2index_l, 0, _n_id2index, v1[i], nLower);
 
 		if (nLower >= 0)
@@ -549,7 +548,30 @@ int TreeAdj::remove_node(int node_id)
 				nLower
 			);
 		}
+
+		// Remove Name-2-ID mapping
+        /* 
+		if (algorithm::binary_search(_m_name2id_l, 0, _n_name2id, v1[i], nLower, nHigher) == EXOK && nLower >= 0) {
+			int nName2ID_r = _n_name2id;
+			algorithm::remove_elements(
+				_m_name2id_l,
+				0,
+				_n_name2id,
+				nLower,
+				nHigher+1
+			);
+
+			algorithm::remove_elements(
+				_m_name2id_r,
+				0,
+				nName2ID_r,
+				nLower,
+				nHigher+1
+			);
+		}
+        */
 	}
+
 
 	return 0;
 }
@@ -705,6 +727,17 @@ int TreeAdj::count_node()
 int TreeAdj::count_edge()
 {
 	return _n_edge;
+}
+
+/*================================================== 
+ * Be careful: do not modify data after 
+ *==================================================*/
+int TreeAdj::get_data(int& nEdgesize, int* &pTreeLeft, int* &pTreeRight) {
+	nEdgesize = _n_id2index;
+	pTreeLeft = _m_id2index_l;
+	pTreeRight = _m_id2index_r;
+
+	return 0;
 }
 
 #define DISPLAY_ONE_PROCESS printf(".")

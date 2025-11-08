@@ -1,5 +1,4 @@
-# Note CMake 3.5 or Higher are required
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.8)
 add_compile_options(-std=c++11)
 
 project( main  )
@@ -9,6 +8,7 @@ file(GLOB APP_COPA21 "dynsocc/application/tournaments/CopaAmerica2021/copa_ameri
 
 file(GLOB STATICLIBS "dynsocc/cvplayer/impl/player/*.cpp"
 					"dynsocc/fundamental/impl/number/*.cpp"
+					"dynsocc/fundamental/impl/prob/*.cpp"
 					"dynsocc/fundamental/impl/statemachine/*.cpp"
 					"dynsocc/fundamental/impl/soccer/*.cpp"
 					"dynsocc/fundamental/impl/test/*.cpp"

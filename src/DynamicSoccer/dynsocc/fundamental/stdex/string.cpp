@@ -1,7 +1,5 @@
 #include "string.hpp"
 #include <vector>
-#include <math.h>
-#include <string.h>
 
 using namespace dynsocc;
 using namespace std;
@@ -73,14 +71,11 @@ int stringutil::compare(unsigned int* p1, int n1, unsigned int* p2, int n2)
 		}
 	}
 
-
 	return 0;
 }
 
 int stringutil::fuzzy_search(unsigned int* str, int n)
 {
-	
-
 	return 0;
 }
 
@@ -121,7 +116,67 @@ string stringutil::format_number_thousand_separator(double number, int& res, cha
 		str.insert(ndotIdx - i * 3, 1, ch_separator);
 	}
 
-	
-
 	return str;
+}
+
+std::string stringutil::tolower(std::string str1)
+{
+    std::string str2 = str1;
+
+    for (int i=0;i<str2.length();++i)
+    {
+        if (str2[i] >= 'A' && str2[i] <= 'Z')
+        {
+            str2[i] = 'a' + str2[i] - 'A';
+        }
+    }
+
+    return str2;
+}
+
+std::string stringutil::trim(std::string str)
+{
+    while (str.length() > 0 && (str[0] == ' ' || str[0] == '\t' || str[0] == '\r' || str[0] == '\n'))
+    {
+        str.erase(0, 1);
+    }
+
+    while (str.length() > 0 && (str[str.length()-1] == ' ' || str[str.length()-1] == '\t' || str[str.length()-1] == '\r' || str[str.length()-1] == '\n'))
+    {
+        str.erase(str.length()-1, 1);
+    }
+    
+    return str;
+}
+
+double stringutil::approximate_match(std::string str1, std::string str2)
+{
+    int n1 = str1.length();
+    int n2 = str2.length();
+    
+
+    return 0.0;
+}
+
+int stringutil::split(string str1, char ch_separator, vector<string> &vsep)
+{
+    vsep.clear();
+    int nprev = -1;                         // Previous Position 
+    int nlen = str1.length();
+    for (int i=0;i<nlen;++i)       // 
+    {
+        if (str1[i] == ch_separator)
+        {
+            if (i >= nprev + 1)
+            {
+                vsep.push_back(str1.substr(nprev+1, i-nprev-1));    
+            }
+            nprev = i;
+        }
+    }
+    if (nlen >= nprev + 1)
+    {
+        vsep.push_back(str1.substr(nprev+1, nlen-nprev-1));    
+    }
+    return 0;
 }

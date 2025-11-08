@@ -2,6 +2,6 @@
 #define DYNSOCC_FUNDAMENTAL_STDEX_STDEX_H_
 
 #define STDEX_SUCCESS(a) (a==0)
-
+#define EXOK 0
 
 #endif

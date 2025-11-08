@@ -205,7 +205,8 @@ namespace dynsocc
 	public:
 		TreeAdj();
         int add_node(int parent_id, std::string name, int &nodeID);		// Parent-ID < 0 => Adding a root node 
-		int get_node(int ID, std::string& data);
+		int add_node(std::string parent_node_name, std::string name, int &nodeID);   
+        int get_node(int ID, std::string& data);
         int remove_node(int node_id);
 
         int get_root_node(int &nodeid, std::string& name);
@@ -218,6 +219,7 @@ namespace dynsocc
         int branch_population(int node_id);
         int branches_population(std::vector<int> node_id);
 
+        int get_data(int& nEdgesize, int* &pTreeLeft, int* &pTreeRight);
         //
         // v_edge_l[i]=n
         // v_edge_r[i]=m

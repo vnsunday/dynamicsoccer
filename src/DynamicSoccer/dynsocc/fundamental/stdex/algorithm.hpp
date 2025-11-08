@@ -2,6 +2,7 @@
 #define DYNSOCC_FUNDAMENTAL_STDEX_ALGORITHM_HPP_
 #include <assert.h>
 #include <string.h>
+#include "stdex.h"
 
 namespace dynsocc
 {
@@ -150,7 +151,20 @@ namespace dynsocc
         }
 
         template<typename T>
-        static int remove_element(T* parr, T* parr2, int nBegin, int& nEnd, int removeIndex)
+        static int remove_element(T* parr, T* parr2, int nBegin, int& nEnd, int removeIndex) {
+            if (removeIndex >= nBegin && removeIndex < nEnd) {
+                for (int i = removeIndex; i < nEnd - 1; ++i) {
+                    parr[i] = parr[i + 1];
+                    parr2[i] = parr2[i + 1];
+                }
+                nEnd--;
+                return EXOK;
+            }
+            return 1;
+        }
+
+        template<typename T>
+        static int remove_elements(T* parr, T* parr2, int nBegin, int& nEnd, int startIndex, int endIndex)
         {
             if (removeIndex >= nBegin && removeIndex < nEnd)
             {
@@ -166,12 +180,20 @@ namespace dynsocc
             return 1;
         }
         
+        /*==================================================
+         * Remove Elements
+         *    Array to removed: 
+         *          parr. 
+         *          [nBegin; nEnd): Range index of parr.
+         *    Indexes:
+         *       prm_indexes: reference indexes 
+         *       
+         *==================================================*/
         template<typename T>
         static int remove_elements(T* parr, int nBegin, int &nEnd, int* prm_indexes, int nRemoveStart, int nRemoveEnd)
         {
             // Validate 
-            for (int i=nRemoveStart;i<nRemoveEnd;++i)
-            {
+            for (int i=nRemoveStart;i<nRemoveEnd;++i) {
                 if (prm_indexes[i] < nBegin || prm_indexes[i] >= nEnd)
                 {
                     // Invalid data
@@ -261,9 +283,10 @@ namespace dynsocc
 			nEnd++;
 			return 0;
 		}
-	};
 
+        template<typename T>
+        static int equality_score(T* parr1, int n1, T* parr2, int n2);
+	};
 }
 
-
-#endif 
+#endif
