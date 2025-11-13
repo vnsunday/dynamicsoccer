@@ -149,7 +149,7 @@ namespace dynsocc
          * Remove Elements
          *    Array to be removed: parr.
          *          [nBegin; nEnd): Workign range index for parr.
-         *    Indexes:
+         *    
          *       premove_indexes: array-containning Index to remove
          *          premove_indexes[i] = index-of-parr to remove
          *       
