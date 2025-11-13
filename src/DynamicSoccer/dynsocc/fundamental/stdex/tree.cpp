@@ -79,8 +79,6 @@ class TreeTechnique
 			free(pMapBuffer);
 		}
 
-		
-
 		void dummy_arrange()
 		{
 			// Degree (20)
@@ -457,7 +455,6 @@ int TreeAdj::remove_node(int node_id)
 	int nR = _n_id2index;
 	int nMid = 0;
 	int nFindIndex = -1;
-
 
 	if (algorithm::binary_search(_m_id2index_l, 0, _n_id2index, node_id, nFindIndex) !=0 || nFindIndex<0)
 	{

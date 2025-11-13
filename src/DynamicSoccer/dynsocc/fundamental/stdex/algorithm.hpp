@@ -137,91 +137,25 @@ namespace dynsocc
         }
 
         template<typename T>
-        static int remove_element(T* parr, int nBegin, int &nEnd, int removeIndex)
-        {
-            if (removeIndex >= nBegin && removeIndex < nEnd)
-            {
-                for (int i=removeIndex;i<nEnd-1;++i)
-                {
-                    parr[i]=parr[i+1];
-                }
-                nEnd--;
-                return 0;
-            }
-            return 1;
-        }
+        static int remove_element(T* parr, int nBegin, int &nEnd, int removeIndex);
 
         template<typename T>
-        static int remove_element(T* parr, T* parr2, int nBegin, int& nEnd, int removeIndex) {
-            if (removeIndex >= nBegin && removeIndex < nEnd) {
-                for (int i = removeIndex; i < nEnd - 1; ++i) {
-                    parr[i] = parr[i + 1];
-                    parr2[i] = parr2[i + 1];
-                }
-                nEnd--;
-                return EXOK;
-            }
-            return 1;
-        }
+        static int remove_element(T* parr, T* parr2, int nBegin, int& nEnd, int removeIndex);
 
         template<typename T>
-        static int remove_elements(T* parr, T* parr2, int nBegin, int& nEnd, int startIndex, int endIndex)
-        {
-            /*
-            if (removeIndex >= nBegin && removeIndex < nEnd)
-            {
-                for (int i=removeIndex;i<nEnd-1;++i)
-                {
-                    parr[i]=parr[i+1];
-                    parr2[i] = parr2[i+1];
-                }
-
-                nEnd--;
-                return 0;
-            }
-            */
-            return 1;
-        }
+        static int remove_elements(T* parr, T* parr2, int nBegin, int& nEnd, int startIndex, int endIndex);
         
         /*==================================================
          * Remove Elements
-         *    Array to removed: 
-         *          parr. 
-         *          [nBegin; nEnd): Range index of parr.
+         *    Array to be removed: parr.
+         *          [nBegin; nEnd): Workign range index for parr.
          *    Indexes:
-         *       prm_indexes: reference indexes 
+         *       premove_indexes: array-containning Index to remove
+         *          premove_indexes[i] = index-of-parr to remove
          *       
          *==================================================*/
         template<typename T>
-        static int remove_elements(T* parr, int nBegin, int &nEnd, int* prm_indexes, int nRemoveStart, int nRemoveEnd)
-        {
-            // Validate 
-            for (int i=nRemoveStart;i<nRemoveEnd;++i) {
-                if (prm_indexes[i] < nBegin || prm_indexes[i] >= nEnd)
-                {
-                    // Invalid data
-                    return 1;
-                }
-            }
-
-            int nRemove = nRemoveEnd - nRemoveStart;
-            int* premove = (int*)malloc(sizeof(int)*nRemove);
-
-            memcpy(premove, prm_indexes + nRemoveStart, nRemove*sizeof(int));
-            std::sort(premove, premove+nRemove);
-
-            // Remove from largest position first, then go on.
-            for (int i=nRemove-1;i>=0;i--)
-            {
-                for (int j=premove[i];j<nEnd;j++)
-                {
-                    parr[j] = parr[j+1];
-                }
-                nEnd--;
-            }
-
-            return 0;
-        }
+        static int remove_elements(T* parr, int nBegin, int &nEnd, int* premove_indexes, int nRemoveStart, int nRemoveEnd);
 
         template<typename T>
         static int remove_elements(T* parr, T* parr2, int nBegin, int &nEnd, int* prm_indexes, int nRemoveStart, int nRemoveEnd)
