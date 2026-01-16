@@ -143,6 +143,9 @@ namespace dynsocc
         static int remove_element(T* parr, T* parr2, int nBegin, int& nEnd, int removeIndex);
 
         template<typename T>
+        static int remove_elements(T* parr, int nBegin, int &nEnd, int startIndex, int removeIndex);
+
+        template<typename T>
         static int remove_elements(T* parr, T* parr2, int nBegin, int& nEnd, int startIndex, int endIndex);
         
         /*==================================================
@@ -225,5 +228,7 @@ namespace dynsocc
         static int equality_score(T* parr1, int n1, T* parr2, int n2);
 	};
 }
+
+#include "algorithm.ipp"
 
 #endif

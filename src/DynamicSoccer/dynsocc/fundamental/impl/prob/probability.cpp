@@ -9,7 +9,6 @@ using namespace std;
 double dynsocc::mean(double* pD, int nD) {
 
     double dSum = std::accumulate(pD, pD+nD, 0);
-
     return dSum / nD;
 }
 
@@ -33,7 +32,7 @@ int dynsocc::outlier_detection_zscore(double* pA, int nA, int& nNormal, int& nOu
     // z-score 
     // Three sigma
     double dSum = 0;
-    double dMean; 
+    double dMean;
     double dVariance = 0.0;
     double dSigma;
     double dThreeSigmaL;

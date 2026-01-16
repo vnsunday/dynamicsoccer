@@ -283,7 +283,6 @@ int TreeAdj::add_node(int parent_id, std::string name, int& nID)   // Parent-ID 
 		}
 	}
 	
-
 	// Vector of a Node 
 	_auto_id++;
 	nID = _auto_id;		// Node Address
@@ -525,8 +524,14 @@ int TreeAdj::remove_node(int node_id)
 		}
 	}
 
-	algorithm::remove_elements(_v_edge_l, _v_edge_r, 0, _n_edge, v_remove_edge.data(), 0, v_remove_edge.size()); // Edge removal
-	algorithm::remove_elements(_vnode, 0, _nNode, v_node_index.data(), 0, v_node_index.size()); // 
+	algorithm::remove_elements(_v_edge_l, 
+								_v_edge_r, 
+								0, 
+								_n_edge, 
+								(int*)v_remove_edge.data(), 
+								0, 
+								v_remove_edge.size()); // Edge removal
+	algorithm::remove_elements(_vnode, 0, _nNode, (int*)v_node_index.data(), 0, v_node_index.size()); // 
 	
 	// Remove Id-2-Index mapping
 	// And Remove Name-2-Id Mapping
@@ -547,11 +552,10 @@ int TreeAdj::remove_node(int node_id)
 		}
 
 		// Remove Name-2-ID mapping
-        /* 
-		if (algorithm::binary_search(_m_name2id_l, 0, _n_name2id, v1[i], nLower, nHigher) == EXOK && nLower >= 0) {
+		if (algorithm::binary_search((string*)_m_name2id_l, 0, _n_name2id, _vnode[v1[i]].name, nLower, nHigher) == EXOK && nLower >= 0) {
 			int nName2ID_r = _n_name2id;
 			algorithm::remove_elements(
-				_m_name2id_l,
+				(string*)_m_name2id_l,
 				0,
 				_n_name2id,
 				nLower,
@@ -559,14 +563,13 @@ int TreeAdj::remove_node(int node_id)
 			);
 
 			algorithm::remove_elements(
-				_m_name2id_r,
+				(int*)_m_name2id_r,
 				0,
 				nName2ID_r,
 				nLower,
 				nHigher+1
 			);
 		}
-        */
 	}
 
 
@@ -758,7 +761,6 @@ void test_adjtree::test()
 	vector<int> vid_l2;
 	vector<int> vid_l3_1;
 	vector<int> vid_l3_2;
-
 
 	std::sort(vname_in.begin(), vname_in.end());
 	std::sort(vname_in_l2.begin(), vname_in_l2.end());

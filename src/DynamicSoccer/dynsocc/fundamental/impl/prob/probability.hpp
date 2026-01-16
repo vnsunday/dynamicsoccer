@@ -23,8 +23,6 @@ int standard_normal_distribution_table(
 
 int outlier_detection_zscore(double* pA, int nA, int& nNormal, int& nOutlier, std::vector<int>& voutlier);
 
-
-
 }
 
 #endif

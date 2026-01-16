@@ -1,5 +1,6 @@
 #include "textview.h"
 
+#include <cstring>
 #include <string>
 #include <vector>
 #include <assert.h>
@@ -44,28 +45,28 @@ std::string TextView::column_print(
 
         if (vformat[i] & DYNSOCC_TEXT_ALIGN_LEFT)
         {            
-            memccpy(
+            memcpy(
                 szBuff + arr_column_start[i], 
                 vcol_value[i].data(), 
-                0, 
+                // 0, 
                 ndisplaylen
             );
         }
         else if (vformat[i] & DYNSOCC_TEXT_ALIGN_RIGHT)
         {
-            memccpy(
+            memcpy(
                 szBuff + arr_column_start[i+1] - nspace_between_col - ndisplaylen,
                 vcol_value[i].data(), 
-                0, 
+                // 0, 
                 ndisplaylen
             );
         }
         else if (vformat[i] & DYNSOCC_TEXT_ALIGN_CENTER)
         {
-            memccpy(
+            memcpy(
                 szBuff + arr_column_start[i] + (vcol_size[i] - ndisplaylen)/2,
                 vcol_value[i].data(), 
-                0, 
+                // 0, 
                 ndisplaylen
             );
         }
@@ -130,28 +131,28 @@ std::string TextView::table_print(
 
 			if (vformat[i] & DYNSOCC_TEXT_ALIGN_LEFT)
 			{
-				memccpy(
+				memcpy(
 					szBuff + arr_column_start[i],
 					vtable_data[row][i].data(),
-					0,
+					//0,
 					ndisplaylen
 				);
 			}
 			else if (vformat[i] & DYNSOCC_TEXT_ALIGN_RIGHT)
 			{
-				memccpy(
+				memcpy(
 					szBuff + arr_column_start[i + 1] - nspace_between_col - ndisplaylen,
 					vtable_data[row][i].data(),
-					0,
+					//0,
 					ndisplaylen
 				);
 			}
 			else if (vformat[i] & DYNSOCC_TEXT_ALIGN_CENTER)
 			{
-				memccpy(
+				memcpy(
 					szBuff + arr_column_start[i] + (vcol_size[i] - ndisplaylen) / 2,
 					vtable_data[row][i].data(),
-					0,
+					// 0,
 					ndisplaylen
 				);
 			}

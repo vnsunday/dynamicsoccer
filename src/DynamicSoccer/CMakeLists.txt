@@ -13,6 +13,7 @@ file(GLOB STATICLIBS "dynsocc/cvplayer/impl/player/*.cpp"
 					"dynsocc/fundamental/impl/soccer/*.cpp"
 					"dynsocc/fundamental/impl/test/*.cpp"
 					"dynsocc/fundamental/stdex/*.cpp"
+					"dynsocc/fundamental/stdex/*.ipp"
 					"dynsocc/util/*.cpp"
 					"dynsocc/test/state_machine/switcher/*.cpp"
 					"dynsocc/test/state_machine/*.cpp" )					
