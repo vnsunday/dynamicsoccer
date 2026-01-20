@@ -226,6 +226,12 @@ namespace dynsocc
 
         template<typename T>
         static int equality_score(T* parr1, int n1, T* parr2, int n2);
+
+        template<typename T1, typename T2> 
+        static int put_map(T1 key, T2 value, T1* p_sorted_keys, T2* pvalue, int keycount);
+
+        template<typename T1, typename T2> 
+        static int get_map(T1 key, T2& value, T1* p_sorted_keys, T2* pvalue, int keycount);
 	};
 }
 
