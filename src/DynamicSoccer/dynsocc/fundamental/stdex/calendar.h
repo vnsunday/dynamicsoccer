@@ -20,9 +20,10 @@ namespace dynsocc
     class Calendar 
     {
     private:
+        /* Map */
         int year_weekr[100][54];
         int year_weekl[100];
-        int nyear_week;
+        int yearcount;
 
     public:
 

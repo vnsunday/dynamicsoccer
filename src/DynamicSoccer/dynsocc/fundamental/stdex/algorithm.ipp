@@ -77,6 +77,27 @@ int dynsocc::algorithm::put_map(T1 key, T2 value, T1* p_sorted_keys, T2* pvalue,
     return EXOK;
 }
 
+template<typename T1, typename T2, typename AssignerValue> 
+int dynsocc::algorithm::put_map(T1 key, T2 value, T1* p_sorted_keys, T2* pvalue, AssignerValue op_assign, int keycount) {
+    int nFound = -1;
+    
+    /* Existing Keys */
+    if (algorithm::binary_search(p_sorted_keys, 0, keycount, key, nFound) == EXOK && 
+            nFound >= 0) {
+        // Override - Update existing value
+        op_assign(pvalue[nFound], value); // pvalue[nfound]=value
+    }
+    // Add New 
+    else {
+        int index;
+        int valuecount = keycount;
+        insert_into_sorted_desc(p_sorted_keys, 0, keycount, key, index);
+        insert(pvalue, 0, valuecount, value, index);
+    }
+
+    return EXOK;
+}
+
 template<typename T1, typename T2> 
 int dynsocc::algorithm::get_map(T1 key, T2& value, T1* p_sorted_keys, T2* pvalue, int keycount) {
 
@@ -93,3 +114,20 @@ int dynsocc::algorithm::get_map(T1 key, T2& value, T1* p_sorted_keys, T2* pvalue
 
     return 1; // Not-Found
 }
+
+template<typename T1, typename T2, typename AssignerValue> 
+int dynsocc::algorithm::get_map(T1 key, T2& value, T1* p_sorted_keys, T2* pvalue, AssignerValue op_assign, int keycount) {
+    int nFound = -1;
+
+    /* Existing Keys */
+    if (algorithm::binary_search(p_sorted_keys, 0, keycount, key, nFound) == EXOK && 
+            nFound >= 0) {
+        // Override - Update existing value
+        op_assign(value, pvalue[nFound]); // value = pvalue[nfound]
+
+        return EXOK;
+    }
+
+    return 1; // Not-Found
+}
+

@@ -29,7 +29,7 @@ int rotate_bw_weekday(int nWeekday) {
 }
 
 Calendar::Calendar() {
-    nyear_week = 0;
+    yearcount = 0;
 }
 
 int Calendar::build_solar_years(int year, int month, int day, const char* day_of_week) {
@@ -71,6 +71,11 @@ int Calendar::build_solar_years(int year, int month, int day, const char* day_of
     int yweekr[54];  // yweekr[3] = 21 <=> The end of week 3 is the 21-th day of year
     int nLeap = (year % 4 == 0);
 
+
+    for (int i=1; i<=5; i++) {
+        // Building Year by Year 
+        
+    }
 
     // int dow = Weekday(weekday);
     // int doy = date_to_dayofyear(year, month, day);

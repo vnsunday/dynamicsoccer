@@ -224,14 +224,42 @@ namespace dynsocc
 			return 0;
 		}
 
+        // AssignerValue(destitation, source): destination = source
+        template<typename T, typename AssignerValue>
+        static int insert(T* parr, int nBegin, int& nEnd, T val, AssignerValue op_assign, int nPos)
+        {
+            assert(nPos < nEnd && nPos >= 0);
+
+            // Starting from nPos+1, move everything forward
+            for (int i = nEnd; i > nPos; i--)
+            {
+                op_assign(parr[i], parr[i - 1]); // parr[i] = parr[i - 1]
+            }
+
+            // Insert at nPos
+            op_assign(parr[nPos], val); // parr[nPos] = val
+            nEnd++;
+            return 0;
+        }
+
         template<typename T>
         static int equality_score(T* parr1, int n1, T* parr2, int n2);
 
         template<typename T1, typename T2> 
         static int put_map(T1 key, T2 value, T1* p_sorted_keys, T2* pvalue, int keycount);
 
+        /*========================================
+            AssignValue(T2 dest, T2 source): dest = source
+         *========================================*/
+        template<typename T1, typename T2, typename AssignerValue> 
+        static int put_map(T1 key, T2 value, T1* p_sorted_keys, T2* pvalue, AssignerValue op_assign, int keycount);
+
         template<typename T1, typename T2> 
         static int get_map(T1 key, T2& value, T1* p_sorted_keys, T2* pvalue, int keycount);
+
+        template<typename T1, typename T2, typename AssignerValue> 
+        static int get_map(T1 key, T2& value, T1* p_sorted_keys, T2* pvalue, AssignerValue op_assign, int keycount);
+
 	};
 }
 
