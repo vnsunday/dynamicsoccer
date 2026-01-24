@@ -6,6 +6,8 @@
 namespace dynsocc 
 {
     std::string azWeekday[7]; // = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+    int azYearDay[2] = { 365, 366 };
+
     int azMonthSize[2][13] = { 
         { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }, 
         { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
@@ -21,8 +23,9 @@ namespace dynsocc
     {
     private:
         /* Map */
+        int year_weekcount[100];
         int year_weekr[100][54];
-        int year_weekl[100];
+        int yearl[100];
         int yearcount;
 
     public:
@@ -41,7 +44,9 @@ namespace dynsocc
 
         // std::string find_date_by_weekday(const char*weekday, int year, int month, int day);
 
-        
+        static int Copy54Int(int* pdest, int* psource);
+
+        int printint2D(/*int[][54] a*/);
     };
 }
 
