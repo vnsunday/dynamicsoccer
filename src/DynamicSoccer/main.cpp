@@ -12,6 +12,7 @@
 #include "dynsocc/fundamental/stdex/struct.hpp"
 #include "dynsocc/fundamental/stdex/tree.h"
 #include "dynsocc/fundamental/stdex/textview.h"
+#include "dynsocc/fundamental/stdex/calendar.h"
 
 using namespace std;
 using namespace dynsocc;
@@ -66,7 +67,7 @@ int main(int argc, char const *argv[])
 	int k = 2009;
 	printf("TTT %03d\r\n", k);
 
-	test_adjtree::test();
+	// test_adjtree::test();
 
 	vector<int> vcolsize({ 14, 20, 18});
 	vector<int> vformat({ DYNSOCC_TEXT_ALIGN_CENTER, DYNSOCC_TEXT_ALIGN_RIGHT, DYNSOCC_TEXT_ALIGN_LEFT});
@@ -79,5 +80,7 @@ int main(int argc, char const *argv[])
 			{ "a", "b", "c" },
 			{ "a", "b", "c" } }), '|') << endl;
 	
+	Calendar c1;
+	c1.build_solar_years(2026, 01, 26, "Monday");
 	return 0;
 }
