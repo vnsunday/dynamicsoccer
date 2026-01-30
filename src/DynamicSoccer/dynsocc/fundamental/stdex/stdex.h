@@ -3,5 +3,6 @@
 
 #define STDEX_SUCCESS(a) (a==0)
 #define EXOK 0
+#define EXSOK ""
 
 #endif

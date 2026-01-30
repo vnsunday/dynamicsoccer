@@ -5,8 +5,6 @@
 #include <string>
 #include <queue>
 
-
-
 namespace dynsocc
 {
     struct TreeEx

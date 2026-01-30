@@ -1,3 +1,10 @@
+/*
+template<typename T>
+int find_location_in_asc_array(T* parr, int nBegin, int nEnd, T val, int& nPosS, int& nPosE) {
+
+}
+*/
+
 template<typename T>
 int dynsocc::algorithm::remove_element(T* parr, T* parr2, int nBegin, int& nEnd, int removeIndex) {
     if (removeIndex >= nBegin && removeIndex < nEnd) {
@@ -130,4 +137,43 @@ int dynsocc::algorithm::get_map(T1 key, T2& value, T1* p_sorted_keys, T2* pvalue
 
     return 1; // Not-Found
 }
+
+template<typename T>
+std::string dynsocc::algorithm::new_vertex(T vertex, T* pV, int& nVertex, T* pEdgeL, T* pEdgeR, int& nEdge) {
+
+    int nFound = 0;
+    int nPos;
+    if (algorithm::binary_search(pV, 0, nVertex, vertex, nFound) == EXOK) {
+        return "Vertex duplicated."; // Failed
+    }
+
+    algorithm::insert_into_sorted_asc(pV, 0, nVertex, vertex, nPos);
+    return EXSOK;
+}
+
+template<typename T>
+std::string dynsocc::algorithm::new_edge(T startVertex, T endVertex, T* pV, int& nVertex, T* pEdgeL, T* pEdgeR, int& nEdge) {
+
+    /* Found Duplicate */
+    int nFound = 0;
+    int nPos;
+    int nIdxL;
+    int nIdxR;
+
+    if (algorithm::binary_search(pEdgeL, 0, nEdge, startVertex, nIdxL, nIdxR) == EXOK) {
+        for (int i=nIdxR; i<= nIdxR; i++) {
+            if (pEdgeR[i] == endVertex) {
+                return "Duplicated Edge"; 
+            }
+        }
+    }
+
+    return EXSOK;
+}
+
+template<typename T>
+std::string dynsocc::algorithm::delete_edge(T startVertex, T endVertex, T* pV, int& nVertex, T* pEdgeL, T* pEdgeR, int& nEdge) {
+    return EXSOK;
+}
+
 

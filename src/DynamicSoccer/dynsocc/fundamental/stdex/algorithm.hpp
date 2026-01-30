@@ -2,6 +2,7 @@
 #define DYNSOCC_FUNDAMENTAL_STDEX_ALGORITHM_HPP_
 #include <assert.h>
 #include <string.h>
+#include <string>
 #include <algorithm>
 #include "stdex.h"
 
@@ -207,6 +208,9 @@ namespace dynsocc
 			return 0;
 		}
 
+        template<typename T>
+        static int find_location_in_asc_array(T* parr, int nBegin, int nEnd, T val, int& nPosS, int& nPosE);
+
 		template<typename T>
 		static int insert(T* parr, int nBegin, int& nEnd, T val, int nPos)
 		{
@@ -260,6 +264,16 @@ namespace dynsocc
         template<typename T1, typename T2, typename AssignerValue> 
         static int get_map(T1 key, T2& value, T1* p_sorted_keys, T2* pvalue, AssignerValue op_assign, int keycount);
 
+        template<typename T>
+        static std::string new_vertex(T vertex, T* pV, int& nVertex, T* pEdgeL, T* pEdgeR, int& nEdge);
+
+        template<typename T>
+        static std::string new_edge(T startVertex, T endVertex, T* pV, int& nVertex, T* pEdgeL, T* pEdgeR, int& nEdge);
+
+        template<typename T>
+        static std::string delete_edge(T startVertex, T endVertex, T* pV, int& nVertex, T* pEdgeL, T* pEdgeR, int& nEdge);
+
+        
 	};
 }
 
