@@ -208,9 +208,6 @@ namespace dynsocc
 			return 0;
 		}
 
-        template<typename T>
-        static int find_location_in_asc_array(T* parr, int nBegin, int nEnd, T val, int& nPosS, int& nPosE);
-
 		template<typename T>
 		static int insert(T* parr, int nBegin, int& nEnd, T val, int nPos)
 		{

@@ -154,13 +154,12 @@ int Calendar::build_solar_years(int year, int month, int day, const char* day_of
     /*
     algorithm::put_map<int, int*>(  
         year,   // Key
-        yweekr, // Value
+        yweekr, // Value int* 
         yearl,  // Map Key
-        year_weekr,  // Map Vaue
+        year_weekr,  // Map Vaue   year_week[4] = int[54]*
         Copy54Int,    
         yearcount);
     */
-
 
     int iwd;
     string str1 = weekday_of_date(2025, 9, 02, yweekr_1, nweek1, iwd);

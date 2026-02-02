@@ -1,10 +1,3 @@
-/*
-template<typename T>
-int find_location_in_asc_array(T* parr, int nBegin, int nEnd, T val, int& nPosS, int& nPosE) {
-
-}
-*/
-
 template<typename T>
 int dynsocc::algorithm::remove_element(T* parr, T* parr2, int nBegin, int& nEnd, int removeIndex) {
     if (removeIndex >= nBegin && removeIndex < nEnd) {
@@ -154,12 +147,20 @@ std::string dynsocc::algorithm::new_vertex(T vertex, T* pV, int& nVertex, T* pEd
 template<typename T>
 std::string dynsocc::algorithm::new_edge(T startVertex, T endVertex, T* pV, int& nVertex, T* pEdgeL, T* pEdgeR, int& nEdge) {
 
-    /* Found Duplicate */
+    /*==================================================
+        NE1. Duplicated? => Failed
+        NE2. AddNew 
+        NE3. 
+
+        Note: Preconditions. pVertex(pV) and pEdge are Pair-sorted-ASC <=> Sorted by (pv[i], pEdge[j])
+            => pVertex are sorted ASC 
+     *==================================================*/
     int nFound = 0;
     int nPos;
     int nIdxL;
     int nIdxR;
 
+    // NE1. Duplicated 
     if (algorithm::binary_search(pEdgeL, 0, nEdge, startVertex, nIdxL, nIdxR) == EXOK) {
         for (int i=nIdxR; i<= nIdxR; i++) {
             if (pEdgeR[i] == endVertex) {
@@ -168,11 +169,22 @@ std::string dynsocc::algorithm::new_edge(T startVertex, T endVertex, T* pV, int&
         }
     }
 
+    // NE2. AddNew
+    if (algorithm::find_location_in_sorted_order(pEdgeR, nIdxL, nIdxR, endVertex, nPos) == EXOK) {
+        int nEdgeR = nEdge;
+        algorithm::insert(pEdgeL, 0, nEdge, startVertex, nPos);
+        algorithm::insert(pEdgeR, 0, nEdgeR, endVertex, nPos);
+    }
+
     return EXSOK;
 }
 
 template<typename T>
 std::string dynsocc::algorithm::delete_edge(T startVertex, T endVertex, T* pV, int& nVertex, T* pEdgeL, T* pEdgeR, int& nEdge) {
+    /*==================================================
+     * 
+     *==================================================*/
+
     return EXSOK;
 }
 
