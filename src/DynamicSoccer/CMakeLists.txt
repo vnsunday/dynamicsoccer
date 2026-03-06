@@ -16,7 +16,8 @@ file(GLOB STATICLIBS "dynsocc/cvplayer/impl/player/*.cpp"
 					"dynsocc/fundamental/stdex/*.ipp"
 					"dynsocc/util/*.cpp"
 					"dynsocc/test/state_machine/switcher/*.cpp"
-					"dynsocc/test/state_machine/*.cpp" )					
+					"dynsocc/test/state_machine/*.cpp"
+					"dynsocc/application/*.cpp" )					
 
 add_executable( main ${SOURCES} )
 add_executable( copa_america_2k21 ${APP_COPA21} )
