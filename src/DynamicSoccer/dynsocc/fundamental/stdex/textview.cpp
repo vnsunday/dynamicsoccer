@@ -118,11 +118,11 @@ std::string TextView::table_print(
 	}
 	arr_column_start[n] = arr_column_start[n - 1] + vcol_size[n - 1] + nspace_between_col;
 
-	memset(szBuff, ch_space, arr_column_start[n]);
-	szBuff[arr_column_start[n]] = NULL;
-
 	for (int row = 0; row < vtable_data.size(); ++row)
 	{
+		memset(szBuff, ch_space, arr_column_start[n]);
+		szBuff[arr_column_start[n]] = NULL;
+
 		for (int i = 0; i < n; ++i)
 		{
 			int nsize = vcol_size[i];
