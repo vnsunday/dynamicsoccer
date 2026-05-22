@@ -130,20 +130,20 @@ int ZTable(char *S, int n, int* Z) {
         }
         else {
             lenbeta = r - i + 1;
-            i0 = i - l + 1;
+            i0 = i - l;
 
             if (Z[i0] < lenbeta) {
                 Z[i] = Z[i0];
                 #ifdef LOGTRACE
-                printf("    Step[%d] Z[%d]<lenbeta=%d\r\n",
-                        i, i, lenbeta);
+                printf("    Step[%d] Z[%d]=%d<lenbeta=%d\r\n",
+                        i, i0, Z[i0], lenbeta);
                 #endif
                 // l,r unchanged
             }
             else {
                 #ifdef LOGTRACE
-                printf("    Step[%d] Z[]>=lenbeta=%d\r\n",
-                        i);
+                printf("    Step[%d] Z[%d]=%d>=lenbeta=%d\r\n",
+                        i, i0, Z[i0], lenbeta);
                 #endif
                 j2 = r + 1;
                 j1 = lenbeta + 1; // (r - l) + 1;
