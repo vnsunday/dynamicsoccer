@@ -8,6 +8,8 @@ const int NMAX = 100;
 int M[NMAX];
 int N[NMAX];
 
+#define LOGTRACE 1
+
 using namespace std;
 /*==================================================
     CASES
@@ -66,7 +68,11 @@ int analyze(const vector<string>& vline) {
         printf("String: %s\r\n", vline[i].c_str());
         for (int j=1; j<vline[i].length(); j++) {
             printf("    Z[%d]=%d (%s)\r\n", j, Z[j], azMatch[j].c_str());
-            printf("        [L,R]=[%d,%d]\r\n", l[j], r[j]);
+            printf("        [L,R]=[%d,%d]; prefix=%s; S[%d]=%s\r\n", 
+                                l[j], r[j],
+                                vline[i].substr(0,3).c_str(),
+                                j,
+                                vline[i].substr(j,3).c_str());
         }
     }
     return 0;
@@ -92,23 +98,33 @@ int ZTable(char *S, int n, int* Z) {
     int r = -1;
     int lenbeta = 0;
 
+
+
     while ( i < n ) {
         if (i > r) {
             j2 = i;
             j1 = 0;
+
         
             /* Compare to the prefix */
             while (S[j1] == S[j2] && j2 < n) { j1++; j2++;}
 
             /* Found */
             if (j2 > i) {
+                #ifdef LOGTRACE
+                printf("    Step[%d](i>r=%d). Found l=%d;rnew=%d;Z=%d\r\n",
+                        i, r, i, j2-1, j2-i);
+                #endif
+
                 l = i;
                 r = j2 - 1;
                 Z[i] = j2 - i;
             }
             else {
-                l = -1;
-                r = -1;
+                #ifdef LOGTRACE
+                printf("    Step[%d](i>r=%d). NotFound\r\n",
+                        i, r);
+                #endif                
                 Z[i] = 0;
             }
         }
@@ -117,12 +133,20 @@ int ZTable(char *S, int n, int* Z) {
             i0 = i - l + 1;
 
             if (Z[i0] < lenbeta) {
-                Z[i] = lenbeta;
+                Z[i] = Z[i0];
+                #ifdef LOGTRACE
+                printf("    Step[%d] Z[%d]<lenbeta=%d\r\n",
+                        i, i, lenbeta);
+                #endif
                 // l,r unchanged
             }
             else {
+                #ifdef LOGTRACE
+                printf("    Step[%d] Z[]>=lenbeta=%d\r\n",
+                        i);
+                #endif
                 j2 = r + 1;
-                j1 = (r - l) + 1;
+                j1 = lenbeta + 1; // (r - l) + 1;
             
                 while (S[j1] == S[j2] && j2 < n) {
                     j1 ++;
@@ -131,6 +155,7 @@ int ZTable(char *S, int n, int* Z) {
 
                 l = i;
                 r = j2 - 1;
+                Z[i] = (j2 - i);
             }
         }
         i++;
