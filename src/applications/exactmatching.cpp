@@ -98,8 +98,6 @@ int ZTable(char *S, int n, int* Z) {
     int r = -1;
     int lenbeta = 0;
 
-
-
     while ( i < n ) {
         if (i > r) {
             j2 = i;
@@ -107,7 +105,7 @@ int ZTable(char *S, int n, int* Z) {
 
         
             /* Compare to the prefix */
-            while (S[j1] == S[j2] && j2 < n) { j1++; j2++;}
+            while (j2 < n && S[j1] == S[j2]) { j1++; j2++;}
 
             /* Found */
             if (j2 > i) {
@@ -212,6 +210,20 @@ int phase(char* S, int nS, char* P, int nP, int i, int iA, int iS) {
     }
     else if (M[iS] == N[i] && 0 < N[i] && N[i] <i) {
     }
+    return 0;
+}
+
+/*============================================================ 
+    
+ *============================================================*/
+int apostolico_giancarlo() {
+
+    // compare/shift phases 
+    int q; // Number of shift phases
+    int N[100]; // N[i]: inner-Suffix length of P[1..i]
+    int M[100]; // Additional resource 
+                    // M[j] <= Matches_count(Right Align P to T at j)
+    
     return 0;
 }
 
